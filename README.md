@@ -1,6 +1,7 @@
 # ml_project
 
 PARTE A.
+
 • Progettazione ed implementazione di funzioni per simulare la propagazione in avanti di unarete neurale multi-strato con almeno:   
   due strati di pesi, con  la  sigmoide come funzione dioutput dei nodi interni e l'identità come funzione di output dei nodi di output.
     (FACOLTATIVO: permettere all'utente di implementare reti con più di uno strato dinodi interni e con qualsiasi 
@@ -13,6 +14,7 @@ PARTE A.
                   funzione di output per ciascun strato e con  qualsiasi funzione di errore derivabile rispetto all'output).
 
 PARTE B.
+
   Si consideri come input le immagine raw del dataset mnist. Si ha, allora,un problema di classificazione a C classi, con C=10. 
   Si estragga opportunamente un datasetglobale di N coppie (ad esempio, N=200).Si fissi la discesa del gradiente come algoritmodi
   aggiornamento dei pesi, ed una rete neurale con un unico strato di nodi interni. Siscelgano gli iper-parametri del modello, 
