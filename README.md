@@ -2,13 +2,15 @@
 
 PARTE A.
 
-• Progettazione ed implementazione di funzioni per simulare la propagazione in avanti di una rete neurale multi-strato con almeno:   
+• Progettazione ed implementazione di funzioni per simulare la propagazione in avanti di una rete neurale multi-strato con almeno: 
+
   due strati di pesi, con  la  sigmoide come funzione di output dei nodi interni e l'identità come funzione di output dei nodi di output.
     (FACOLTATIVO: permettere all'utente di implementare reti con più di uno strato dinodi interni e con qualsiasi 
                   funzione di output per ciascun strato)
 
 • Progettazione ed implementazione di funzioni per la realizzazione della back-propagationper reti neurali 
   multi-strato con almeno: 
+  
   due strati di pesi, con la sigmoide come funzione dioutput dei nodi interni  e l'identità come funzione
   di output dei nodi di output, con la somma dei quadrati come funzione di errore.
     (FACOLTATIVO: permettere all'utente di realizzare la back-propagation con più di uno strato di nodi interni, con qualsiasi 
