@@ -8,7 +8,8 @@ PARTE A.
                   funzione di output per ciascun strato)
 
 • Progettazione ed implementazione di funzioni per la realizzazione della back-propagationper reti neurali 
-  multi-strato con almeno: due strati di pesi, con la sigmoide come funzione dioutput dei nodi interni  e l'identità come funzione
+  multi-strato con almeno: 
+  due strati di pesi, con la sigmoide come funzione dioutput dei nodi interni  e l'identità come funzione
   di output dei nodi di output, con la somma dei quadrati come funzione di errore.
     (FACOLTATIVO: permettere all'utente di realizzare la back-propagation con più di uno strato di nodi interni, con qualsiasi 
                   funzione di output per ciascun strato e con  qualsiasi funzione di errore derivabile rispetto all'output).
