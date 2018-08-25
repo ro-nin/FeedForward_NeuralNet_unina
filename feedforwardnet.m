@@ -14,7 +14,7 @@ function net = feedforwardnet(hiddenSizes, outFnc)
     % Salvo l'array contenente le funzioni dei vari strati
     net.outFnc = outFnc;
     
-    % len contiene il numero di strati della rete più 1 per l'input
+    % len contiene il numero di strati della rete piÃ¹ 1 per l'input
     len = length(hiddenSizes);
     
     for i = 2 : len
@@ -25,6 +25,6 @@ function net = feedforwardnet(hiddenSizes, outFnc)
         
         % Per ogni strato aggiungo un array di bias 
         % uno per ogni neurone
-        net.biases{i-1} = rand(hiddenSizes(i), 1);
+        net.biases{i-1} = rand(hiddenSizes(i));
     end
 end
