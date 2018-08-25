@@ -12,27 +12,24 @@ function out = forwardpropagation(net, input)
     % Array contenente l'output devari strati
     z = cell(len);
     
-    % La prima riga conterr‡ l'input dato alla rete
+    % La prima riga conterr√† l'input dato alla rete
     z{1} = input;
     
-    % Per ogni strato della rete (1 Ë l'input)
+    % Per ogni strato della rete (1 √® l'input)
     for l = 2: len
         
         % Numero di nodi nello strato l
         nodes = net.hiddenSize(l);
         
-        % Valori di attivazione di ciascun nodo dello strato l
-        % al quale verr‡ applicata la funzione di output
-        % inizializzata con il valore di bias
-        in = net.biases{l - 1};
-        
-        % Array che conterr‡ gli output dei nodi dello strato l
+        % Array che conterr√† gli output dei nodi dello strato l
         z{l} = zeros(nodes);
         
         % Per ogni nodo dello strato l
         for i = 1: nodes
             
-            a = in(1);
+            % Valori di attivazione del nodo al quale verr√† applicata 
+            % la funzione di output, inizializzata con il valore di bias
+            a = net.biases{l - 1}(i);
            
             % Array contenente il peso delle connesioni entranti sul nodo i
             w = net.weights{l-1}(i);
