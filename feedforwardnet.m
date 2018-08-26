@@ -19,12 +19,8 @@ function net = feedforwardnet(hiddenSizes, outFnc)
     
     for i = 2 : len
         % per ciascuno strato creo una matrice di pesi tale per ogni 
-        % nodo dello strato (i-1)-esimo (colonna) ci siano una connesione
-        % con il nodo dello strato i-esimo (riga)
-        net.weights{i - 1} = rand(hiddenSizes(i),hiddenSizes(i-1));
-        
-        % Per ogni strato aggiungo un array di bias 
-        % uno per ogni neurone
-        net.biases{i-1} = rand(hiddenSizes(i));
+        % nodo dello strato (i-1)-esimo (colonna) +1 per il bias 
+        % ci siano una connesione con il nodo dello strato i-esimo (riga)
+        net.weights{i-1} = rand(hiddenSizes(i), hiddenSizes(i-1) + 1);
     end
 end
