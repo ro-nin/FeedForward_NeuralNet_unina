@@ -1,12 +1,12 @@
 function out = forwardpropagation(net, input)
 % Funzione che esegue la forward propagation e restituisce l'array
-% contenente l'otuput della rete
+% contenente l'output della rete
 %
 % net: rete neurale
 %
-% input: input della rete espersso come vettore colonna
+% input: input della rete espresso come vettore colonna
     
-    % Numero di starti della rete + 1 per l'input
+    % Numero di strati della rete + 1 per l'input
     len = length(net.hiddenSize);
     
     % Array contenente l'output devari strati
