@@ -40,12 +40,11 @@ function backprop(net, imagename, labelname)
            currLen = len-j;
            wKh = net.weights{len-j};
            temp=0;
-           for h = 1:net.hiddenSize(currLen+1)
-                column=wKh(1:net.hiddenSize(currLen+1),h);
-                disp(column);
-                temp=temp+ sum((column.*last));
+           for h = 1:net.hiddenSize(currLen)
+                column=wKh(1:net.hiddenSize(currLen),h);
+                temp=temp+ (column.*last);
            end
-           deltaKhidden=deltaKhidden .* temp;
+           deltaKhidden=deltaKhidden * temp;
        end
        
     end
