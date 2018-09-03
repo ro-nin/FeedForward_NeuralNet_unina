@@ -8,10 +8,10 @@ function out = forwardpropagation(net, input)
     
     % Numero di strati della rete + 1 per l'input
     len = length(net.hiddenSize);
-    
+ 
     % Array contenente l'output devari strati
-    z = cell(len);
-    
+    z = cell(len, 1);
+
     % La prima riga conterrà l'input dato alla rete
     z{1} = [input; 1];
     
@@ -35,9 +35,9 @@ function out = forwardpropagation(net, input)
         z{l} = [fnc(a); 1];
     end
     
-    % Restituisco l'ultimo array di output
+    % Restituisco gli array di output
     % equivalente all'output della rete, rimuovendo l'ultimo valore
     % usato come fattore moltiplicativo del bias
     z{len}(nodes) = [];
-    out = z{len};
+    out = z;
 end
