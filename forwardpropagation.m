@@ -21,9 +21,6 @@ function out = forwardpropagation(net, input)
         % Numero di nodi nello strato l
         nodes = net.hiddenSize(l) + 1;
         
-        % Array che conterrà gli output dei nodi dello strato l
-        z{l} = zeros(nodes);
-        
         % Array contenente il peso delle connesioni entranti sul nodo i
         w = net.weights{l-1};
         % Calcolo il contributo del nodo j dello strato l-1
