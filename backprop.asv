@@ -18,9 +18,7 @@ function backprop(net, imagename, labelname)
     for i = 1: N
         targets(labels(i, 1)+1, i) = 1;
     end
-    
-    
-    
+        
     
     for i = 1: 1
        x = images(:, i);       
@@ -31,20 +29,32 @@ function backprop(net, imagename, labelname)
        % disp(targets(:,i))
        deltaKout = y{len} - targets(:,i);        
        % disp(deltaKout);
-       zHn = y{1:len-1};
-       OneMinuszHn = 1-zHn;
-       deltaKhidden = zHn .* OneMinuszHn;
+       
+       %zHn = y(1:len-1);
+       %OneMinuszHn = 1-zHn;
+       %deltaKhidden = zHn .* OneMinuszHn;
+       
+       deltaKhidden = cell(len-2,1);
+       for j = 1:len-2
+           zHn=y{len-j};
+           OneMinuszHn = 1-zHn;
+           deltaKhidden{len-j-1}=zHn .* OneMinuszHn;
+       end
        
        last=deltaKout;
-       for j = 1:len-1
+       for j = 1:len-2
            currLen = len-j;
            wKh = net.weights{len-j};
            temp=0;
-           for h = 1:net.hiddenSize(currLen)
-                column=wKh(1:net.hiddenSize(currLen),h);
-                temp=temp+ (column.*last);
+           for h = 1:net.hiddenSize(currLen+1)
+                %column=wKh(1:net.hiddenSize(currLen+1),h);
+                %disp(column);
+                %temp=temp+ sum((column.*last));
+                row=wKh(h,net.hiddenSize(currLen+1+1));
+                temp=temp+sum((row.*last));
            end
-           deltaKhidden=deltaKhidden * temp;
+           deltaKhidden=deltaKhidden .* temp;
+           last=deltaKhidden;
        end
        
     end
