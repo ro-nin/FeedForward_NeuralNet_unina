@@ -1,4 +1,4 @@
-function backprop(net, imagename, labelname)
+function backprop(net)
 
 images = loadMNISTImages('train-images.idx3-ubyte');
 labels = loadMNISTLabels('train-labels.idx1-ubyte');
@@ -6,6 +6,8 @@ labels = loadMNISTLabels('train-labels.idx1-ubyte');
 % disp(images);
 % display_network(images(:,1:100)); % Show the first 100 images
 % disp(labels(1:10));
+
+eta = 0.5;
 
 N = size(images);
 N = N(2);
@@ -20,7 +22,7 @@ for i = 1: N
 end
 
 
-for i = 1: 1
+for i = 1: 1000
     x = images(:, i);
     delta = cell(len, 1);
     y = forwardpropagation(net, x);
@@ -31,29 +33,38 @@ for i = 1: 1
     end
     
     for i = len - 1 : -1 : 2
-        
-        for j = 1 : net.hiddenSize(i)
-            
-            delta{i}(j) = y{i} * (1 - y{i});
-            
-            matrix = net.weights{i+1};
+
+        for j = 1 : net.hiddenSize(i)            
+            delta{i}(j) = y{i}(j) .* (1 - y{i}(j));            
+            matrix = net.weights{i};
             column = matrix(:, j);
+            delta{i}(j) = sum(column' .* delta{i+1});
+        end
+        
+        disp(delta{i});
+        
+    end
+    
+    for i = 1 : length(net.hiddenSize) - 1
+        
+        w = net.weights{i};
+        col = size(w);
+        col = col(2);
+        
+        for j = 1 : net.hiddenSize(i+1)
             
-            delta{i}(j) = sum(column .* delta{i+1}(j));
+            for k = 1 : col
+                net.weights{i}(j,k) = net.weights{i}(j,k) - (eta * delta{i+1}(j) * y{i+1}(j));
+            end
         end
         
     end
-    
-    for i = 1 : length(net.hiddenSize)
-        
-        for j = 1 : net.hiddenSize(i)
-            net.weights{i}(j) = net.weights{i}(j) - eta * delta{i}(j) * y{i}(j);
-        end
-        
-    end
-    
     
 end
+display_network(images(:,1:100)); % Show the first 100 images
+x = images(:, 3);
+out = forwardpropagation(net, x);
+
 end
 
 
