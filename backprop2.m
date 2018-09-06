@@ -7,7 +7,7 @@ function new_net = backprop2(net)
     display_network(images(:,1:100)); % Show the first 100 images
     % disp(labels(1:10));
 
-    eta = 0.005;
+    eta = 0.1;
 
     N = size(images);
     N = N(2);
@@ -16,15 +16,17 @@ function new_net = backprop2(net)
     len = length(net.hiddenSize);
 
     targets = zeros(10, N);
+    targets = targets + 0.01;
+    
 
     for i = 1: N
-        targets(labels(i, 1)+1, i) = 1;
+        targets(labels(i, 1)+1, i) = 0.99;
     end
 
-for epoch = 1 : 100
+for epoch = 1 : 1
     
-    for im = 1: 10
-
+    for im = 1: 500
+        fprintf("epoch; %d, image: %d \n",epoch,im)
         x = images(:, im);
         delta = cell(len-1, 1);
         outputLayers = forwardpropagation(net, x);
@@ -74,6 +76,8 @@ for epoch = 1 : 100
 end
     
     new_net = net;
+    disp(get_selected(forwardpropagation(new_net,images(:,40))))
+    
 end
 
 
