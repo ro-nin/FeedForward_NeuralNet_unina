@@ -1,13 +1,13 @@
-function backprop2(net)
+function new_net = backprop2(net)
 
     images = loadMNISTImages('train-images.idx3-ubyte');
     labels = loadMNISTLabels('train-labels.idx1-ubyte');
 
     % disp(images);
-    % display_network(images(:,1:100)); % Show the first 100 images
+    display_network(images(:,1:100)); % Show the first 100 images
     % disp(labels(1:10));
 
-    eta = 0.5;
+    eta = 0.005;
 
     N = size(images);
     N = N(2);
@@ -21,7 +21,8 @@ function backprop2(net)
         targets(labels(i, 1)+1, i) = 1;
     end
 
-
+for epoch = 1 : 100
+    
     for im = 1: 10
 
         x = images(:, im);
@@ -29,7 +30,7 @@ function backprop2(net)
         outputLayers = forwardpropagation(net, x);
 
         for i = 1: net.hiddenSize(end)
-            delta{end}(i) = (outputLayers{end}(i) - targets(i));
+            delta{end}(i) = (outputLayers{end}(i) - targets(i, im));            
         end
     
         % Per ogni layer calcolo il delta
@@ -59,18 +60,20 @@ function backprop2(net)
                     x = net.weights{layer}(j,k);
                     y = eta * delta{layer}(j) * outputLayers{layer}(j);
                     z = x - y;
-                    
-                    disp(net.weights{layer}(j,k));
-                    disp(layer);
-                    disp(j);
-                    disp(k);
-                    disp(z);
+%                     disp(net.weights{layer}(j,k));
+%                     disp(layer);
+%                     disp(j);
+%                     disp(k);
+%                     disp(z);
                     net.weights{layer}(j,k) = z;
                 end
             end
         end
 
     end
+end
+    
+    new_net = net;
 end
 
 
