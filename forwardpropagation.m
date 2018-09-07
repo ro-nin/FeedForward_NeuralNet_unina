@@ -13,7 +13,7 @@ function out = forwardpropagation(net, input)
     z = cell(len, 1);
 
     % La prima riga conterrà l'input dato alla rete
-    z{1} = [input; 1];
+    z{1} = [input; 0.1];
 
     % Per ogni strato della rete (1 è l'input)
     for l = 2: len

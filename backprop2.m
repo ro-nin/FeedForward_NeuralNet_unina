@@ -7,7 +7,7 @@ function new_net = backprop2(net)
     display_network(images(:,1:100)); % Show the first 100 images
     % disp(labels(1:10));
 
-    eta = 0.1;
+    eta = 0.01;
 
     N = size(images);
     N = N(2);
@@ -16,7 +16,7 @@ function new_net = backprop2(net)
     len = length(net.hiddenSize);
 
     targets = zeros(10, N);
-    targets = targets + 0.01;
+    targets = targets + 0.001;
     
 
     for i = 1: N
@@ -25,9 +25,11 @@ function new_net = backprop2(net)
 
 for epoch = 1 : 1
     
-    for im = 1: 500
-        fprintf("epoch; %d, image: %d \n",epoch,im)
+    for im = 1: 30000
+        %fprintf("epoch; %d, image: %d \n",epoch,im)
         x = images(:, im);
+        x= x * 0.99;
+        %x=rand(10,1);
         delta = cell(len-1, 1);
         outputLayers = forwardpropagation(net, x);
 
@@ -76,7 +78,16 @@ for epoch = 1 : 1
 end
     
     new_net = net;
-    disp(get_selected(forwardpropagation(new_net,images(:,40))))
+    disp(get_selected(forwardpropagation(new_net,images(:,1))))
+    disp(get_selected(forwardpropagation(new_net,images(:,2))))
+    disp(get_selected(forwardpropagation(new_net,images(:,3))))
+    disp(get_selected(forwardpropagation(new_net,images(:,4))))
+    disp(get_selected(forwardpropagation(new_net,images(:,5))))
+    disp(get_selected(forwardpropagation(new_net,images(:,6))))
+    disp(get_selected(forwardpropagation(new_net,images(:,7))))
+    disp(get_selected(forwardpropagation(new_net,images(:,8))))
+    disp(get_selected(forwardpropagation(new_net,images(:,9))))
+    
     
 end
 

@@ -21,6 +21,8 @@ function net = feedforwardnet(hiddenSizes, outFnc)
         % per ciascuno strato creo una matrice di pesi entranti 
         % tale per ogni nodo dello strato (i-1)-esimo (colonna) +1 per il bias 
         % ci siano una connesione con il nodo dello strato i-esimo (riga)
-        net.weights{i-1} = rand(hiddenSizes(i), hiddenSizes(i-1) + 1) ./ 100;
+        net.weights{i-1} = rand(hiddenSizes(i), hiddenSizes(i-1) + 1);
+        %net.weights{i-1} = net.weights{i-1} - 0.5
+        net.weights{i-1} = net.weights{i-1} ./ 1000
     end
 end
