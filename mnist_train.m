@@ -18,23 +18,19 @@ end
 guessed = 0;
 error = 0;
 
-for i = 1: sizeoftrain
-    
-    test = propagate(net, images(:, i)');
-    
+for i = 1: sizeoftrain    
+    test = propagate(net, images(:, i)');    
     [val, idx] = max(test{end});
-    fprintf("val: %.2f - idx: %d\n", val, idx);
-    
+    %fprintf("val: %.2f - idx: %d\n", val, idx);    
     if(idx == find(labels(i, :)))
         guessed = guessed + 1;
-    end
-   
+    end   
     error = error + sum((test{end} - labels(i,:)').^2);    
 end
 
 error = error * 0.5;
 
-fprintf("guessesed: %d%%\n", (guessed/sizeoftrain) * 100);
+fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, sizeoftrain,(guessed/sizeoftrain) * 100);
 fprintf("total error: %f\n", error);
 
 %display_network(images(:,1:100));
