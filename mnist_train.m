@@ -11,7 +11,7 @@ sizeoftrain = 100;
 
 for i = 1: epochs
     for im = 1: sizeoftrain
-        net = train(net, images(:, im)', labels(im, :)', 0.1);
+        net = train(net, images(:, im)', labels(im, :)', 0.3);
     end
 end
 
@@ -25,13 +25,11 @@ for i = 1: sizeoftrain
     if(idx == find(labels(i, :)))
         guessed = guessed + 1;
     end   
-    error = error + sum((test{end} - labels(i,:)').^2);    
+    error = error + 0.5 * sum((test{end} - labels(i,:)').^2);    
 end
 
-error = error * 0.5;
-
 fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, sizeoftrain,(guessed/sizeoftrain) * 100);
-fprintf("total error: %f\n", error);
+fprintf("total error: %.2f\n", error);
 
 %display_network(images(:,1:100));
 out = net;
