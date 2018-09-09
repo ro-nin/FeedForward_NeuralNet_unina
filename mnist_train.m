@@ -1,4 +1,4 @@
-function out = mnist_train(net, epochs)
+function out = mnist_train(net, epochs, eta, sizeoftrain, sizeoftest)
     
 train_im = loadMNISTImages('train-images.idx3-ubyte');
 train_lb = loadMNISTLabels('train-labels.idx1-ubyte');
@@ -14,17 +14,21 @@ test_lb = test_lb';
 test_lb(test_lb==0) = 10;                                
 test_lb = dummyvar(test_lb);
 
-sizeoftrain = 100;
-sizeoftest = 100;
+if nargin < 5
+    fprintf("not enough params, setting to default\n");
+    epochs=1;
+    sizeoftrain = 100;
+    sizeoftest = 10000;
+    eta=0.01;
+end
+%start counting execution time
+tic
 
 for i = 1: epochs
     for im = 1: sizeoftrain
-<<<<<<< HEAD
         fprintf("ep:%d, im:%d \n",i,im);
         net = train(net, train_im(:, im)', train_lb(im, :)', eta);
-=======
         net = train(net, train_im(:, im)', train_lb(im, :)', 0.3);
->>>>>>> parent of 2c10dc6... more params
     end
 end
 
@@ -43,8 +47,9 @@ end
 
 fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, sizeoftest,(guessed/sizeoftest) * 100);
 fprintf("total error: %.2f\n", error);
+%print execution time
+toc
 
-%display_network(images(:,1:100));
 out = net;
 
 end
