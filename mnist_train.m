@@ -26,9 +26,8 @@ tic
 
 for i = 1: epochs
     for im = 1: sizeoftrain
-        fprintf("ep:%d, im:%d \n",i,im);
+        %fprintf("ep:%d, im:%d \n",i,im);
         net = train(net, train_im(:, im)', train_lb(im, :)', eta);
-        net = train(net, train_im(:, im)', train_lb(im, :)', 0.3);
     end
 end
 
@@ -45,7 +44,9 @@ for i = 1: sizeoftest
     error = error + 0.5 * sum((test{end} - test_lb(i,:)').^2);    
 end
 
-fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, sizeoftest,(guessed/sizeoftest) * 100);
+rate = sizeoftest,(guessed/sizeoftest) * 100;
+
+fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, rate);
 fprintf("total error: %.2f\n", error);
 %print execution time
 toc
