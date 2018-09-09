@@ -5,7 +5,10 @@ delta = cell(length(net.hiddenSizes) - 1, 1);
 delta{end} =  outputs{end} - t;
 
 for i = length(net.hiddenSizes) - 1: - 1: 2
-    delta{i-1} = ((net.weights{i}' * delta{i})') .* outputs{i}' .*  (1 - outputs{i}');
+    %delta{i-1} = ((net.weights{i}' * delta{i})') .* outputs{i}' .*  (1 - outputs{i}');
+    %OLD UPDATE
+    deriv=net.trainDerFnc{i-1};
+    delta{i-1} = ((net.weights{i}' * delta{i})') .* deriv(outputs{i}');
 end
 
 for l = 1 : length(net.hiddenSizes) - 1
