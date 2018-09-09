@@ -44,9 +44,8 @@ for i = 1: sizeoftest
     error = error + 0.5 * sum((test{end} - test_lb(i,:)').^2);    
 end
 
-rate = sizeoftest,(guessed/sizeoftest) * 100;
-
-fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, rate);
+rate = (guessed/sizeoftest) * 100;
+fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, sizeoftest,rate);
 fprintf("total error: %.2f\n", error);
 %print execution time
 toc
