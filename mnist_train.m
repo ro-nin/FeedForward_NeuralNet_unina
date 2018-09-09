@@ -17,7 +17,7 @@ test_lb = dummyvar(test_lb);
 if nargin < 5
     fprintf("not enough params, setting to default\n");
     epochs=1;
-    sizeoftrain = 100;
+    sizeoftrain = 1000;
     sizeoftest = 10000;
     eta=0.01;
 end
@@ -45,7 +45,7 @@ for i = 1: sizeoftest
 end
 
 rate = (guessed/sizeoftest) * 100;
-fprintf("guessesed: %d/%d rate: %.2f%%\n", guessed, sizeoftest,rate);
+fprintf("guessesed: %d/%d - rate: %.2f%%\n", guessed, sizeoftest, rate);
 fprintf("total error: %.2f\n", error);
 %print execution time
 toc
