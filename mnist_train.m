@@ -26,7 +26,7 @@ tic
 
 for i = 1: epochs
     for im = 1: sizeoftrain
-        %fprintf("ep:%d, im:%d \n",i,im);
+        fprintf("ep:%d/%d, im:%d/%d \n",i,epochs,im,sizeoftrain);
         net = train(net, train_im(:, im)', train_lb(im, :)', eta);
     end
 end
