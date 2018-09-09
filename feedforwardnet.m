@@ -2,6 +2,7 @@ function net = feedforwardnet(hiddenSizes,trainFnc)
     
 net.hiddenSizes = hiddenSizes;
 net.trainFnc = trainFnc;
+net.trainDerFnc = cell(length(trainFnc), 1);
 
 %associa le derivate delle funzioni alle attivazioni
 for i = 1: length(trainFnc)
@@ -13,7 +14,8 @@ for i = 1: length(trainFnc)
         targetFnc=@tanHDerivative;
     elseif isequal(net.trainFnc{i},@ReLU)
         targetFnc=@ReLUDerivative;
-    else disp("errore funzioni di attivazione");
+    else
+        disp("errore funzioni di attivazione");
     end
         
     net.trainDerFnc{i}=targetFnc;
