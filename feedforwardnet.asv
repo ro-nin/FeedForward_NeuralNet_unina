@@ -4,13 +4,10 @@ net.hiddenSizes = hiddenSizes;
 net.trainFnc = trainFnc;
 net.trainDerFnc = cell(length(trainFnc), 1);
 
-
-if (~exist('costFnc','var'))
+if isempty(costFnc)
     net.costFnc=@quadraticCost;
-    disp("No cost function specified, setting to quadratic");
-else
-    net.costFnc = costFnc;
-end
+    disp("No cost function specified, setting to quadrati
+net.costFnc = costFnc;
 
 %associa le derivate delle funzioni alle attivazioni
 for i = 1: length(trainFnc)

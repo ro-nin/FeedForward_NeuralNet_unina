@@ -3,7 +3,7 @@ function out = train(net, x, t, eta)
 outputs = propagate(net, x);
 delta = cell(length(net.hiddenSizes) - 1, 1);
 %delta{end} =  outputs{end} - t;
-delta{end}=net.costFnc(outputs{end},t);
+delta{end}=net.c
 
 for i = length(net.hiddenSizes) - 1: - 1: 2
     %delta{i-1} = ((net.weights{i}' * delta{i})') .* outputs{i}' .*  (1 - outputs{i}');
