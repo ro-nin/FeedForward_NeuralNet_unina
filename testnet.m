@@ -1,5 +1,5 @@
 function [guessed, error] = testnet(net, testSet, targetSet, errorFnc)
-
+%TODO: DELETE
 sizeoftest = size(testSet);
 sizeoftest = sizeoftest(2);
 
