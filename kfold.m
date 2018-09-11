@@ -42,7 +42,7 @@ for cur_eta = etas
         
         for cur_fnc=1: length(fnc)
             
-            k_error = zeros(5, 1);
+            k_error = zeros(k, 1);
             
             for i = 0: k-1
                 
@@ -86,7 +86,7 @@ for cur_eta = etas
                     error = error + 0.5 * sum((test{end} - k_test_lb(t,:)').^2);
                 end
                 
-                k_error(k+1) = error;
+                k_error(i+1) = error;
                 
                 if error < best_error
                     best_error = error;
