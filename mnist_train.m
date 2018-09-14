@@ -19,34 +19,34 @@ if nargin < 5
     epochs=1;
     sizeoftrain = 1000;
     sizeoftest = 10000;
-    eta=0.01;
+    eta=0.1;
 end
 %start counting execution time
 tic
-
 for i = 1: epochs
+
     for im = 1: sizeoftrain
-        fprintf("ep:%d/%d, im:%d/%d \n",i,epochs,im,sizeoftrain);
+        %fprintf("ep:%d/%d, im:%d/%d \n",i,epochs,im,sizeoftrain);
         net = train(net, train_im(:, im)', train_lb(im, :)', eta);
     end
+    
+    guessed = 0;
+    error = 0;
+
+    for j = 1: sizeoftest    
+        test = propagate(net, test_im(:, j)');    
+        [val, idx] = max(test{end});   
+        if(idx == find(test_lb(j, :)))
+            guessed = guessed + 1;
+        end   
+        error = error + 0.5 * sum((test{end} - test_lb(j,:)').^2);    
+    end
+    
+    rate = (guessed/sizeoftest) * 100;
+    fprintf("guessesed: %d/%d - rate: %.2f%%\n", guessed, sizeoftest, rate);
+    fprintf("epoch: %d, total error: %.2f\n", i, error);
+        
 end
-
-guessed = 0;
-error = 0;
-
-for i = 1: sizeoftest    
-    test = propagate(net, test_im(:, i)');    
-    [val, idx] = max(test{end});
-    %fprintf("val: %.2f - idx: %d\n", val, idx);    
-    if(idx == find(test_lb(i, :)))
-        guessed = guessed + 1;
-    end   
-    error = error + 0.5 * sum((test{end} - test_lb(i,:)').^2);    
-end
-
-rate = (guessed/sizeoftest) * 100;
-fprintf("guessesed: %d/%d - rate: %.2f%%\n", guessed, sizeoftest, rate);
-fprintf("total error: %.2f\n", error);
 %print execution time
 toc
 

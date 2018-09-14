@@ -27,12 +27,8 @@ resized_lb = train_lb(1:ts_size, :);
 
 %hyperparametri scelti da testare
 etas = [0.7, 0.1, 0.05, 0.01, 0.008, 0.004];
-nodes = [200, 300, 600];
+nodes = [200, 300, 500, 800];
 fnc = {{@tanH, @ReLU}, {@sigmoid, @identity}, {@sigmoid, @sigmoid}};
-
-best_error = inf;
-best_eta = inf;
-best_node = inf;
 
 tic
 %inizio della cross validation
@@ -87,19 +83,7 @@ for cur_eta = etas
                 end
                 
                 k_error(i+1) = error;
-                
-                if error < best_error
-                    best_error = error;
-                    best_eta = cur_eta;
-                    best_node = cur_node;
-                    best_fnc = fnc{cur_fnc};
-                end
-                
-            % rate = (guessed/sizeoftest) * 100;
-            % fprintf("guessesed: %d/%d - rate: %.2f%%\n", guessed, sizeoftest, rate);
-            % fprintf("total error: %.2f\n", error);
             end
-            
             
             mean = sum(k_error);
             variance = (1/(k-1)) * (sum((k_error - mean).^2));
@@ -108,6 +92,7 @@ for cur_eta = etas
             fnc1 = func2str(fnc{cur_fnc}{1});
             fnc2 = func2str(fnc{cur_fnc}{2});
             fprintf("standard deviation: %f, eta: %.3f, hidden nodes: %d, function: %s, %s\n", deviation, cur_eta, cur_node, fnc1, fnc2);
+
         end
         
     end
@@ -115,7 +100,3 @@ end
 
 toc
 
-fprint("------------------------------------");
-fprint("best error: %.2f \nbest eta: %f\n best number of nodes: %d\n", best_error, best_eta, best_node);
-disp(curr_fnc);
-fprint("------------------------------------");
