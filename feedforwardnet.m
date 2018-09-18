@@ -25,18 +25,19 @@ end
 %associa le derivate delle funzioni alle attivazione
 for i = 1: length(trainFnc)
     if isequal(net.trainFnc{i},@sigmoid)
-        targetFnc=@sigmoidDerivative;
+        fnc = @sigmoidDerivative;
     elseif isequal(net.trainFnc{i},@identity)
-        targetFnc=@identityDerivative;
+        fnc = @identityDerivative;
     elseif isequal(net.trainFnc{i},@tanH)
-        targetFnc=@tanHDerivative;
+        fnc = @tanHDerivative;
     elseif isequal(net.trainFnc{i},@ReLU)
-        targetFnc=@ReLUDerivative;
+        fnc = @ReLUDerivative;
     else
         disp("errore funzioni di attivazione");
+        return;
     end
         
-    net.trainDerFnc{i}=targetFnc;
+    net.trainDerFnc{i} = fnc;
 end
 
 %inizializzazione dei pesi in modo casuale con distribuzione normale
