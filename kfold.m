@@ -85,6 +85,8 @@ for cur_eta = etas
                 k_error(i+1) = error;
             end
             
+            accuracy = guessed / sizeoftest * 100;
+            
             mean = sum(k_error);
             variance = (1/(k-1)) * (sum((k_error - mean).^2));
             deviation = sqrt(variance);
@@ -92,6 +94,7 @@ for cur_eta = etas
             fnc1 = func2str(fnc{cur_fnc}{1});
             fnc2 = func2str(fnc{cur_fnc}{2});
             fprintf("standard deviation: %f, eta: %.3f, hidden nodes: %d, function: %s, %s\n", deviation, cur_eta, cur_node, fnc1, fnc2);
+            fprintf("guessed: %d/%d. accuracy: %.3f\n", guessed, sizeoftest, accuracy);
 
         end
         
