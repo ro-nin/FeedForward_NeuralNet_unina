@@ -39,6 +39,7 @@ for cur_eta = etas
         for cur_fnc=1: length(fnc)
             
             k_error = zeros(k, 1);
+            k_accuracy = zeros(k, 1);
             
             for i = 0: k-1
                 
@@ -82,10 +83,14 @@ for cur_eta = etas
                     error = error + 0.5 * sum((test{end} - k_test_lb(t,:)').^2);
                 end
                 
-                k_error(i+1) = error;
+                k_error(i+1) = error;                
+                
+                accuracy = guessed / sizeoftest * 100;
+                k_accuracy(i+1) = accuracy;
+                
             end
             
-            accuracy = guessed / sizeoftest * 100;
+            mean_accuracy = sum(k_accuracy) / k;
             
             mean = sum(k_error);
             variance = (1/(k-1)) * (sum((k_error - mean).^2));
@@ -94,7 +99,7 @@ for cur_eta = etas
             fnc1 = func2str(fnc{cur_fnc}{1});
             fnc2 = func2str(fnc{cur_fnc}{2});
             fprintf("standard deviation: %f, eta: %.3f, hidden nodes: %d, function: %s, %s\n", deviation, cur_eta, cur_node, fnc1, fnc2);
-            fprintf("guessed: %d/%d. accuracy: %.3f\n", guessed, sizeoftest, accuracy);
+            fprintf("mean accuracy: %.2f\n", mean_accuracy);
 
         end
         
