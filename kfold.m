@@ -26,9 +26,9 @@ resized_im = train_im(:, 1:ts_size);
 resized_lb = train_lb(1:ts_size, :);
 
 %hyperparametri scelti da testare
-etas = [0.01, 0.008, 0.004];
+etas = [0.7, 0.1, 0.05, 0.01, 0.008, 0.004];
 nodes = [200, 300, 500, 800];
-fnc = {{@tanH, @ReLU}, {@sigmoid, @identity}, {@sigmoid, @sigmoid}};
+fnc = {{@tanH, @ReLU}, {@sigmoid, @identity}, {@tanH, @sigmoid}};
 
 tic
 %inizio della cross validation

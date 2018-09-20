@@ -39,8 +39,8 @@ end
 
 % aggiornamento dei pesi
 for i = 1: length(net.hiddenSizes) - 1
-    net.weights{i} = net.weights{i} + eta * deltaWeights{i};
-    net.biases{i} = net.biases{i} + eta * deltaBiases{i};
+    net.weights{i} = net.weights{i} + eta .* deltaWeights{i};
+    net.biases{i} = net.biases{i} + eta .* deltaBiases{i};
 end
 
 out_net = net;
