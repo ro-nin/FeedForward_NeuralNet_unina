@@ -30,17 +30,17 @@ for im = 1: size(input, 1)
     for l = 1 : length(net.hiddenSizes) - 1
         for i = 1: net.hiddenSizes(l+1)
             for j = 1: net.hiddenSizes(l)
-                deltaWeights{l}(i, j) = deltaWeights{l}(i, j) - eta * grad{l}(i) * outputs{l}(j);
+                deltaWeights{l}(i, j) = deltaWeights{l}(i, j) - grad{l}(i) * outputs{l}(j);
             end
-            deltaBiases{l}(i) = deltaBiases{l}(i) - eta * grad{l}(i);
+            deltaBiases{l}(i) = deltaBiases{l}(i) - grad{l}(i);
         end
     end   
 end
 
 % aggiornamento dei pesi
 for i = 1: length(net.hiddenSizes) - 1
-    net.weights{i} = net.weights{i} + deltaWeights{i};
-    net.biases{i} = net.biases{i} + deltaBiases{i};
+    net.weights{i} = net.weights{i} + eta * deltaWeights{i};
+    net.biases{i} = net.biases{i} + eta * deltaBiases{i};
 end
 
 out_net = net;
