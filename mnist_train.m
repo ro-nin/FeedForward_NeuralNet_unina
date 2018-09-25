@@ -42,8 +42,15 @@ for i = 1: epochs
         [val, idx] = max(test{end});   
         if(idx == find(test_lb(j, :)))
             guessed = guessed + 1;
-        end   
-        error = error + 0.5 * (sum(test{end} - test_lb(j,:)')^2);
+        end
+
+        %calcolo dell'errore a seconda della funzione di costo associata
+        if isequal(net.costFnc,@quadraticCost)
+            error = error + 0.5 * (sum(test{end} - test_lb(j,:)')^2);
+        elseif isequal(net.costFnc,@crossEntropy)
+            error = error + sum( log(test{end}) .* test_lb(j,:)' );
+        end
+            
     end
     
     accuracy = (guessed/sizeoftest) * 100;
