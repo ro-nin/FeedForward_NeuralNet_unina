@@ -23,7 +23,8 @@ if nargin < 6
     % set online mode
     batch_size = 1;
 end
-
+fprintf("");
+fprintf("epoch; accuracy; error\n");
 %start counting execution time
 tic
 for i = 1: epochs
@@ -46,8 +47,10 @@ for i = 1: epochs
     end
     
     accuracy = (guessed/sizeoftest) * 100;
-    fprintf("guessesed: %d/%d - accuracy: %.2f%%\n", guessed, sizeoftest, accuracy);
-    fprintf("epoch: %d, total error: %f\n", i, error);
+
+    fprintf("%d; %.2f%%; %f\n", i, accuracy, error);
+%     fprintf("guessesed: %d/%d - accuracy: %.2f%%\n", guessed, sizeoftest, accuracy);
+%     fprintf("epoch: %d, total error: %f\n", i, error);
 
 end
 %print execution time

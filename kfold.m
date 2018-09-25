@@ -26,10 +26,11 @@ resized_im = train_im(:, 1:ts_size);
 resized_lb = train_lb(1:ts_size, :);
 
 %hyperparametri scelti da testare
-etas = [0.7, 0.1, 0.05, 0.01, 0.008, 0.004];
+etas = [0.01, 0.008, 0.004];
 nodes = [200, 300, 500, 800];
 fnc = {{@tanH, @ReLU}, {@sigmoid, @identity}, {@tanH, @sigmoid}};
 
+fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; SSE Standard deviation\n");
 tic
 %inizio della cross validation
 for cur_eta = etas
@@ -98,11 +99,8 @@ for cur_eta = etas
             
             fnc1 = func2str(fnc{cur_fnc}{1});
             fnc2 = func2str(fnc{cur_fnc}{2});
-            fprintf("standard deviation: %f, eta: %.3f, hidden nodes: %d, function: %s, %s\n", deviation, cur_eta, cur_node, fnc1, fnc2);
-            fprintf("mean accuracy: %.2f\n", mean_accuracy);
-
+            fprintf("%s; %s; %.3f; %d; %.2f; %f\n", fnc1, fnc2, cur_eta, cur_node, mean_accuracy, deviation);
         end
-        
     end
 end
 
