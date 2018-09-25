@@ -32,6 +32,8 @@ for i = 1: length(trainFnc)
         fnc = @tanHDerivative;
     elseif isequal(net.trainFnc{i},@ReLU)
         fnc = @ReLUDerivative;
+    elseif isequal(net.trainFnc{i},@softmax_a)
+        fnc = @softMaxDerivative;
     else
         disp("errore funzioni di attivazione");
         return;

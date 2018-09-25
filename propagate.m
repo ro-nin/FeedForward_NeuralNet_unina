@@ -10,6 +10,10 @@ out{1} = input';
 %calcolo valori di attivazione per ogni nodo degli strati
 for i = 1: length(net.hiddenSizes) - 1
     out{i+1} = net.trainFnc{i}((net.weights{i} * out{i}) + net.biases{i});
+    if isequal(net.trainFnc{i},@softmax_a)
+        %completa softmax
+        out{i+1} = out{i+1}/sum(out{i+1});
+    end
 end
 
 end
