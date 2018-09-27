@@ -1,13 +1,11 @@
-function out = train(net, size, input, targets, eta, isOnline)
+function out = train(net, input, targets, eta, TsSize, batchSize)
 
-if ( isOnline == 1)
-     for i = 1: size
-        [dWeights, dBiases] = backPropagation(net, input(i, :), targets(i, :));
-        net = gradientDescent(net, dWeights, dBiases, eta);
-     end    
-else
-    [dWeights, dBiases] = backPropagation(net, input, targets);
+ for i = 1: batchSize: TsSize
+    [dWeights, dBiases] = ...
+        backPropagation(net, input(i: i+batchSize-1, :), targets(i:i+batchSize-1, :));
     net = gradientDescent(net, dWeights, dBiases, eta);
-end
+ end
+ 
     out = net;
+    
 end

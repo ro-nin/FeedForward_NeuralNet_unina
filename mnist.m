@@ -23,16 +23,19 @@ test_lb = test_lb';
 test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
-
+hiddenFnc = @tanH;
+outputFcn = @identity;
 errorFnc = @crossEntropyDerivative;
-isOnline = 1;
+TsSize = 10000;
+batchSize = 100;
 eta = 0.01;
+
 % Create neural network
-net = neuralNet(784, [250, 10], {@tanH, @identity},errorFnc);
+net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorFnc);
 
 tic
-for epoch = 1: 2
-    net = train(net, 10000, train_im, train_lb, eta, isOnline);
+for epoch = 1: 100
+    net = train(net, train_im, train_lb, eta, TsSize, batchSize);
     fprintf('epoch: %d\n', epoch);
 end
 
