@@ -5,8 +5,6 @@ function y = identityDerivative(x)
 
 
 %Derivata della funzione identita'
-
-
     y = ones(size(x));
 end
 

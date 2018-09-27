@@ -1,5 +1,5 @@
 function [dWeights, dBiases] = backPropagation(net, input, ...
-                                               targets, errorFunctionDx)
+                                               targets)
 % Execute a back propagation
 
 layers = net.numOfLayers;
@@ -9,7 +9,7 @@ layers = net.numOfLayers;
 delta = cell(1, layers);
 
 delta{layers} = net.activationDerivative{layers}(a{layers}) .* ...
-                                    errorFunctionDx(z{layers}, targets);
+                                    net.errorFunction(z{layers}, targets);
 
 for layer = layers -1: -1: 1
     delta{layer} = net.activationDerivative{layer}(a{layer}) .* ...
