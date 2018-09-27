@@ -12,13 +12,17 @@ for i = 1: length(net.hiddenSizes) - 1
     deltaBiases{i} = zeros(net.hiddenSizes(i+1), 1);
 end
 
-for im = 1: size(input, 1)
+
+%for im = 1: size(input, 1)
+    tic
     % eseguo la feed forward propagation
-    outputs = propagate(net, input(im, :));
+    %outputs = propagate(net, input(im, :));
+    outputs = propagate(net, input);
     
     % estraggo la derivata dell'output e la calcolo
     derivate = net.trainDerFnc{end}(outputs{end});
-    grad{end} = net.costFnc(outputs{end}, targets(:, im)) .* derivate;
+    %grad{end} = net.costFnc(outputs{end}, targets(:, im)) .* derivate;
+    grad{end} = net.costFnc(outputs{end}, targets) .* derivate;
     
     % calcolo delle derivate per il gradiente
     for i = length(net.hiddenSizes) - 1: - 1: 2
@@ -34,8 +38,9 @@ for im = 1: size(input, 1)
             end
             deltaBiases{l}(i) = deltaBiases{l}(i) - grad{l}(i);
         end
-    end   
-end
+    end
+    toc
+%end
 
 % aggiornamento dei pesi
 for i = 1: length(net.hiddenSizes) - 1

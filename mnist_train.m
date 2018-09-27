@@ -26,13 +26,14 @@ end
 fprintf("");
 fprintf("epoch; accuracy; error\n");
 %start counting execution time
-tic
+%tic
 for i = 1: epochs
 
-    for im = 1: batch_size: sizeoftrain
-        end_im = im + batch_size - 1;
-        net = train(net, train_im(:, im:end_im)', train_lb(im:end_im, :)', eta);
-    end
+    %for im = 1: batch_size: sizeoftrain
+        %end_im = im + batch_size - 1;
+        %net = train(net, train_im(:, im:end_im)', train_lb(im:end_im, :)', eta);
+        net = train(net, train_im', train_lb', eta);
+    %end
     
     guessed = 0;
     error = 0;
@@ -56,12 +57,12 @@ for i = 1: epochs
     accuracy = (guessed/sizeoftest) * 100;
 
     fprintf("%d; %.2f%%; %f\n", i, accuracy, error);
-%     fprintf("guessesed: %d/%d - accuracy: %.2f%%\n", guessed, sizeoftest, accuracy);
-%     fprintf("epoch: %d, total error: %f\n", i, error);
+    fprintf("guessesed: %d/%d - accuracy: %.2f%%\n", guessed, sizeoftest, accuracy);
+    fprintf("epoch: %d, total error: %f\n", i, error);
 
 end
 %print execution time
-toc
+%toc
 
 out = net;
 
