@@ -27,14 +27,14 @@ hiddenFnc = @tanH;
 outputFcn = @identity;
 errorFnc = @crossEntropyDerivative;
 TsSize = 10000;
-batchSize = 100;
-eta = 0.01;
+batchSize = 1;
+eta = 0.1;
 
 % Create neural network
 net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorFnc);
 
 tic
-for epoch = 1: 100
+for epoch = 1: 10
     net = train(net, train_im, train_lb, eta, TsSize, batchSize);
     fprintf('epoch: %d\n', epoch);
 end
