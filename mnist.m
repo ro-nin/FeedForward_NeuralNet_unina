@@ -25,14 +25,15 @@ test_lb = dummyvar(test_lb);
 
 hiddenFnc = @sigmoid;
 outputFcn = @softmax;
-errorFnc = @crossEntropyDerivative;
-TsSize = 900;
+errorDerivative = @crossEntropyDerivative;
+errorFnc=@crossEntropy;
+TsSize = 500;
 batchSize = 1;
 eta = 0.001;
-epochNumber=5;
+epochNumber=100;
 
 % Create neural network
-net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorFnc);
+net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorDerivative);
 
 errors = zeros(epochNumber, 1);
 
@@ -41,27 +42,37 @@ tic
 for epoch = 1: epochNumber
     net = train(net, train_im, train_lb, eta, TsSize, batchSize);
     fprintf('epoch: %d\n', epoch);
-
     
-end
-
- timeElapsed = toc;
- fprintf("time elapsed for training: %.2f seconds\n", timeElapsed);
-% Test neural net
-correct = 0;
-tic
-
-[out,outputs] = forwardPropagation(net, test_im);
-
-for i = 1: size(outputs{1,2}, 1)
-    [val, idx] = max(outputs{1,2}(i,:));    
-    if( idx == find( test_lb(i, :) ) )
-        correct = correct + 1;
+    % Test neural net
+    correct = 0;
+    tic
+    
+    [out,outputs] = forwardPropagation(net, test_im);
+    
+    for i = 1: size(outputs{1,2}, 1)
+        [val, idx] = max(outputs{1,2}(i,:));
+        if( idx == find( test_lb(i, :) ) )
+            correct = correct + 1;
+        end
     end
+    errors(epoch)= sum(errorFnc(outputs{1,2},test_lb)); 
+    %TODO: standard deviation?
+    
+    elapsedTime = toc;
+    fprintf("accuracy: %.2f%%\n", (correct/size(test_im, 1))*100);
+    %fprintf("elapsed time for testing: %.3f seconds\n", elapsedTime);
 end
 
-elapsedTime = toc;
-fprintf("acuracy: %.2f%%\n", (correct/size(test_im, 1))*100);
-fprintf("elapsed time for testing: %.3f seconds\n", elapsedTime);
+hold on;
+    legend('Error');
+    title('Loss Decay');
+    xlabel('Epochs')
+    ylabel('Error (SUM of 10k errors)')
+    axis auto
+    plot(errors(1:epochNumber), 'r');
+hold off;
+
+timeElapsed = toc;
+fprintf("time elapsed for training: %.2f seconds\n", timeElapsed);
 
 

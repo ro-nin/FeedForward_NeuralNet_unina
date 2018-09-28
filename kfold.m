@@ -34,7 +34,8 @@ resized_im = train_im(1:ts_size, :);
 resized_lb = train_lb(1:ts_size, :);
 
 % Fixed hyperparam
-errorFnc = @crossEntropyDerivative;
+errorDerivative = @crossEntropyDerivative;
+errorFnc = @crossEntropy;
 
 % Hyperparameters to test
 netFnc = {{@sigmoid, @softmax}, {@tanH, @ReLU}, {@sigmoid, @identity}};
@@ -61,7 +62,7 @@ for fnc = 1: length(netFnc)
                 k_test_lb = resized_lb(start_idx:stop_idx, :);
                 
                 %train the network
-                net = neuralNet(784, [node, 10], netFnc{fnc}, errorFnc);
+                net = neuralNet(784, [node, 10], netFnc{fnc}, errorDerivative);
                 net = train(net, k_train_im, k_train_lb, eta, size(k_train_im, 1), 1);
                 
                 guessed=0;
@@ -74,7 +75,9 @@ for fnc = 1: length(netFnc)
                         if( idx == find( k_test_lb(n, :) ) )
                             guessed = guessed + 1;
                         end
-                        currError = currError + (sum( log(z{1,2}(n,:)) .* k_test_lb(n, :) ));
+                        %currError = currError + (sum( log(z{1,2}(n,:)) .* k_test_lb(n, :) ));
+                        currError = currError + sum(errorFnc(z{1,2}(n,:),k_test_lb(n, :)));
+                        %TODO: standard Deviation?
 
                     end
 
