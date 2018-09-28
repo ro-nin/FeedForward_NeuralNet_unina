@@ -23,14 +23,13 @@ test_lb = test_lb';
 test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
-% Dimension of taining size
-ts_size = 10000;
-
-% Numeber of folds 
-k = 5;
+% Dimension of training size
+ts_size = 1000;
+% Number of folds
+k = 10;
 
 %calcolo degli slice del training set da utilizzare per il k-folding
-slice_size = int32(ts_size / k); 
+slice_size = int32(ts_size / k);
 resized_im = train_im(1:ts_size, :);
 resized_lb = train_lb(1:ts_size, :);
 
@@ -38,47 +37,61 @@ resized_lb = train_lb(1:ts_size, :);
 errorFnc = @crossEntropyDerivative;
 
 % Hyperparameters to test
-netFnc = {{@tanH, @ReLU}, {@sigmoid, @identity}, {@tanH, @sigmoid}};
-netNodes = [100, 200, 300, 500, 800];
-netEtas = [0.7, 0.1, 0.05, 0.01, 0.008, 0.004];
+netFnc = {{@sigmoid, @softmax}, {@tanH, @ReLU}, {@sigmoid, @identity}};
+netNodes = [250,500, 800];
+netEtas = [0.1, 0.01, 0.001];
+
+currError=0;
+fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; C.E. Standard deviation\n");
 
 for fnc = 1: length(netFnc)
     for node = netNodes
         for eta = netEtas
+            k_error = zeros(k, 1);
+            k_accuracy = zeros(k, 1);
             for i = 0: k-1
                 % Calculate the slice index for testing and for validation
                 start_idx = slice_size * i + 1;
                 stop_idx = start_idx + slice_size - 1;
-                
-                k_train_im = [resized_im(1:start_idx, :); resized_im(stop_idx:ts_size, :)];
-                k_train_lb = [resized_lb(1:start_idx, :); resized_lb(stop_idx:ts_size, :)];
-                
+                %cut the submatrix for the training set
+                k_train_im = [resized_im(1:start_idx-1, :); resized_im(stop_idx+1:ts_size, :)];
+                k_train_lb = [resized_lb(1:start_idx-1, :); resized_lb(stop_idx+1:ts_size, :)];
+                %cut the submatrix for the validation set
                 k_test_im = resized_im(start_idx:stop_idx, :);
                 k_test_lb = resized_lb(start_idx:stop_idx, :);
                 
+                %train the network
                 net = neuralNet(784, [node, 10], netFnc{fnc}, errorFnc);
-
                 net = train(net, k_train_im, k_train_lb, eta, size(k_train_im, 1), 1);
                 
-            end            
+                guessed=0;
+                currError=0;
+                
+                %test on the validation part
+                    [a,z] = forwardPropagation(net, k_test_im);
+                    for n = 1: size(z{1,2}, 1)
+                        [val, idx] = max(z{1,2}(n,:));
+                        if( idx == find( k_test_lb(n, :) ) )
+                            guessed = guessed + 1;
+                        end
+                        currError = currError + (sum( log(z{1,2}(n,:)) .* k_test_lb(n, :) ));
+
+                    end
+
+                k_error(i+1) = currError;
+                accuracy = guessed / size(k_test_im, 1) * 100;
+                k_accuracy(i+1) = accuracy;
+            end
+            mean_accuracy = sum(k_accuracy) / k;
+            
+            mean = sum(k_error);
+            variance = (1/(k-1)) * (sum((k_error - mean).^2));
+            deviation = sqrt(variance);
+            
+            fnc1 = func2str(netFnc{fnc}{1});
+            fnc2 = func2str(netFnc{fnc}{2});
+            fprintf("%s; %s; %.3f; %d; %.2f; %f\n", fnc1, fnc2, eta, node, mean_accuracy, deviation);
+            
         end
     end
 end
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

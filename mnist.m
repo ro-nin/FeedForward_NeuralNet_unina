@@ -23,20 +23,26 @@ test_lb = test_lb';
 test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
-hiddenFnc = @tanH;
-outputFcn = @identity;
+hiddenFnc = @sigmoid;
+outputFcn = @softmax;
 errorFnc = @crossEntropyDerivative;
-TsSize = 10000;
+TsSize = 900;
 batchSize = 1;
-eta = 0.1;
+eta = 0.001;
+epochNumber=5;
 
 % Create neural network
 net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorFnc);
 
+errors = zeros(epochNumber, 1);
+
+%start training for each epoch
 tic
-for epoch = 1: 10
+for epoch = 1: epochNumber
     net = train(net, train_im, train_lb, eta, TsSize, batchSize);
     fprintf('epoch: %d\n', epoch);
+
+    
 end
 
  timeElapsed = toc;
@@ -45,7 +51,7 @@ end
 correct = 0;
 tic
 
-outputs = forwardPropagation(net, test_im);
+[out,outputs] = forwardPropagation(net, test_im);
 
 for i = 1: size(outputs{1,2}, 1)
     [val, idx] = max(outputs{1,2}(i,:));    

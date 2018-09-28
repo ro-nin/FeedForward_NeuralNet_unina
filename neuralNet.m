@@ -32,7 +32,7 @@ for i = 1: length(activationFnc)
         fnc = @tanHDerivative;
     elseif isequal(net.activationFnc{i},@ReLU)
         fnc = @ReLUDerivative;
-    elseif isequal(net.activationFnc{i},@softmax_a)
+    elseif isequal(net.activationFnc{i},@softmax)
         fnc = @softMaxDerivative;
     else
         disp("errore funzioni di attivazione");

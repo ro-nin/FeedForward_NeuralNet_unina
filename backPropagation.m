@@ -6,6 +6,8 @@ layers = net.numOfLayers;
 
 [a, z] = forwardPropagation(net, input, @softmax);
 
+net.z = z;
+
 delta = cell(1, layers);
 
 delta{layers} = net.activationDerivative{layers}(a{layers}) .* ...
