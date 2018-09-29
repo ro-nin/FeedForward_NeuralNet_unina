@@ -106,8 +106,16 @@ for fnc = 1: length(netFnc)
     %plot the current functions
     
     figure('Name',strcat('K-Fold:',fnc1,'-',fnc2));
-    c = categorical({'250','500','800'});
-    y = vertcat(cell2mat(deviationsNodes{1})' , cell2mat(deviationsNodes{2})',cell2mat(deviationsNodes{3})');
+    c = categorical(netNodes);
+    y=[];
+    for devNodesIndex = 1 : length(deviationsNodes)
+        tmp=cell2mat(deviationsNodes{devNodesIndex})';
+        y = vertcat(y,tmp);
+    end
     b = bar(c,y);
+    title(strcat('K-Fold:',fnc1,'-',fnc2));
+    xlabel('Hidden Nodes');
+    ylabel('Error Standard Deviation');
+    drawnow;
 end
 
