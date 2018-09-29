@@ -38,8 +38,9 @@ errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
 
 % Hyperparameters to test
-netFnc = {{@sigmoid, @softmax}, {@tanH, @ReLU}, {@sigmoid, @identity}};
-netNodes = [250,500, 800];
+netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, {@ReLU, @identity}, {@tanH, @ReLU}};
+      
+netNodes = [250, 500, 800];
 netEtas = [0.1, 0.01, 0.001];
 
 currError=0;

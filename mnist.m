@@ -24,13 +24,13 @@ test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
 hiddenFnc = @sigmoid;
-outputFcn = @softmax;
+outputFcn = @identity;
 errorDerivative = @crossEntropyDerivative;
-errorFnc=@crossEntropy;
-TsSize = 500;
+errorFnc = @crossEntropy;
+TsSize = 1000;
 batchSize = 1;
-eta = 0.001;
-epochNumber=100;
+eta = 0.1;
+epochNumber = 10;
 
 % Create neural network
 net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorDerivative);
@@ -40,39 +40,33 @@ errors = zeros(epochNumber, 1);
 %start training for each epoch
 tic
 for epoch = 1: epochNumber
-    net = train(net, train_im, train_lb, eta, TsSize, batchSize);
-    fprintf('epoch: %d\n', epoch);
-    
+    net = train(net, train_im, train_lb, eta, TsSize, batchSize);  
     % Test neural net
     correct = 0;
-    tic
+    [~, out] = forwardPropagation(net, test_im, @softmax);
     
-    [out,outputs] = forwardPropagation(net, test_im);
-    
-    for i = 1: size(outputs{1,2}, 1)
-        [val, idx] = max(outputs{1,2}(i,:));
+    for i = 1: size(out{1,2}, 1)
+        [~, idx] = max(out{1,2}(i,:));
         if( idx == find( test_lb(i, :) ) )
             correct = correct + 1;
         end
     end
-    errors(epoch)= sum(errorFnc(outputs{1,2},test_lb)); 
-    %TODO: standard deviation?
-    
-    elapsedTime = toc;
-    fprintf("accuracy: %.2f%%\n", (correct/size(test_im, 1))*100);
-    %fprintf("elapsed time for testing: %.3f seconds\n", elapsedTime);
+    errors(epoch) = calculateError(out{1,2}, test_lb, errorFnc);
+    %errors(epoch) = sum(errorFnc(out{1,2},test_lb));
+    fprintf('epoch: %3d; accuracy: %3.2f%%\n', epoch, (correct/size(test_im, 1))*100);
 end
 
-hold on;
-    legend('Error');
-    title('Loss Decay');
-    xlabel('Epochs')
-    ylabel('Error (SUM of 10k errors)')
-    axis auto
-    plot(errors(1:epochNumber), 'r');
-hold off;
+warning off;
 
-timeElapsed = toc;
-fprintf("time elapsed for training: %.2f seconds\n", timeElapsed);
+legend('Error');
+title('Loss Decay');
+xlabel('Epochs');
+ylabel('Error (SUM of 10k errors)');
+axis auto;
+plot(errors(1:epochNumber), 'r');
+
+
+elapsedTime = toc;
+fprintf("time elapsed for execution: %.2f seconds\n", elapsedTime);
 
 
