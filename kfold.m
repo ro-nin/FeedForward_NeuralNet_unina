@@ -24,7 +24,7 @@ test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
 % Dimension of training size
-ts_size = 1000;
+ts_size = 100;
 % Number of folds
 k = 10;
 
@@ -38,8 +38,7 @@ errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
 
 % Hyperparameters to test
-netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, {@ReLU, @identity}, {@tanH, @ReLU}};
-      
+netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, {@sigmoid, @identity}, {@tanH, @ReLU}};
 netNodes = [250, 500, 800];
 netEtas = [0.1, 0.01, 0.001];
 
@@ -47,8 +46,14 @@ currError=0;
 fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; C.E. Standard deviation\n");
 
 for fnc = 1: length(netFnc)
+    deviationsNodes = cell(length(netNodes),1);
+    nodeCounter=0;
     for node = netNodes
+        nodeCounter=nodeCounter+1;
+        deviationsEtas=cell(length(netEtas),1);
+        etaCounter=0;
         for eta = netEtas
+            etaCounter=etaCounter+1;
             k_error = zeros(k, 1);
             k_accuracy = zeros(k, 1);
             for i = 0: k-1
@@ -70,18 +75,17 @@ for fnc = 1: length(netFnc)
                 currError=0;
                 
                 %test on the validation part
-                    [a,z] = forwardPropagation(net, k_test_im);
-                    for n = 1: size(z{1,2}, 1)
-                        [val, idx] = max(z{1,2}(n,:));
-                        if( idx == find( k_test_lb(n, :) ) )
-                            guessed = guessed + 1;
-                        end
-                        %currError = currError + (sum( log(z{1,2}(n,:)) .* k_test_lb(n, :) ));
-                        currError = currError + sum(errorFnc(z{1,2}(n,:),k_test_lb(n, :)));
-                        %TODO: standard Deviation?
-
+                [a,z] = forwardPropagation(net, k_test_im);
+                for n = 1: size(z{1,2}, 1)
+                    [val, idx] = max(z{1,2}(n,:));
+                    if( idx == find( k_test_lb(n, :) ) )
+                        guessed = guessed + 1;
                     end
-
+                    %currError = currError + (sum( log(z{1,2}(n,:)) .* k_test_lb(n, :) ));
+                    currError = currError + sum(errorFnc(z{1,2}(n,:),k_test_lb(n, :)));
+                    %TODO: standard Deviation?
+                end
+                
                 k_error(i+1) = currError;
                 accuracy = guessed / size(k_test_im, 1) * 100;
                 k_accuracy(i+1) = accuracy;
@@ -95,7 +99,15 @@ for fnc = 1: length(netFnc)
             fnc1 = func2str(netFnc{fnc}{1});
             fnc2 = func2str(netFnc{fnc}{2});
             fprintf("%s; %s; %.3f; %d; %.2f; %f\n", fnc1, fnc2, eta, node, mean_accuracy, deviation);
-            
+            deviationsEtas{etaCounter}=deviation;
         end
+        deviationsNodes{nodeCounter}=deviationsEtas;
     end
+    %plot the current functions
+    
+    figure('Name',strcat('K-Fold:',fnc1,'-',fnc2));
+    c = categorical({'250','500','800'});
+    y = vertcat(cell2mat(deviationsNodes{1})' , cell2mat(deviationsNodes{2})',cell2mat(deviationsNodes{3})');
+    b = bar(c,y);
 end
+
