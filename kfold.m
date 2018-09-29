@@ -38,13 +38,15 @@ errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
 
 % Hyperparameters to test
-netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, {@sigmoid, @identity}, {@tanH, @ReLU}};
+netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, {@tanH, @ReLU}};
 netNodes = [250, 500, 800];
 netEtas = [0.1, 0.01, 0.001];
 
 currError=0;
 fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; C.E. Standard deviation\n");
 
+elapsedTime = 0;
+tic
 for fnc = 1: length(netFnc)
     deviationsNodes = cell(length(netNodes),1);
     nodeCounter=0;
@@ -75,7 +77,7 @@ for fnc = 1: length(netFnc)
                 currError=0;
                 
                 %test on the validation part
-                [a,z] = forwardPropagation(net, k_test_im);
+                [~, z] = forwardPropagation(net, k_test_im);
                 for n = 1: size(z{1,2}, 1)
                     [val, idx] = max(z{1,2}(n,:));
                     if( idx == find( k_test_lb(n, :) ) )
@@ -92,8 +94,8 @@ for fnc = 1: length(netFnc)
             end
             mean_accuracy = sum(k_accuracy) / k;
             
-            mean = sum(k_error);
-            variance = (1/(k-1)) * (sum((k_error - mean).^2));
+            mu = sum(k_error) / k;
+            variance = sum((k_error - mu).^2) / k;
             deviation = sqrt(variance);
             
             fnc1 = func2str(netFnc{fnc}{1});
@@ -103,19 +105,38 @@ for fnc = 1: length(netFnc)
         end
         deviationsNodes{nodeCounter}=deviationsEtas;
     end
-    %plot the current functions
     
-    figure('Name',strcat('K-Fold:',fnc1,'-',fnc2));
+    elapsedTime = elapsedTime + toc;
+    
+    %plot the current functions
+    graphName = sprintf('K-Fold: %s - %s', fnc1, fnc2);
+    
+    figure('Name', graphName);
+    
     c = categorical(netNodes);
-    y=[];
+    
+    y = zeros(length(netNodes), length(netEtas));
+    
     for devNodesIndex = 1 : length(deviationsNodes)
-        tmp=cell2mat(deviationsNodes{devNodesIndex})';
-        y = vertcat(y,tmp);
+        tmp = cell2mat(deviationsNodes{devNodesIndex})';
+        y(devNodesIndex, :) = tmp;
     end
+    
     b = bar(c,y);
-    title(strcat('K-Fold:',fnc1,'-',fnc2));
+    
+    title(graphName);
+    
+    l = cell(1, length(netEtas));
+    for i = 1: length(netEtas)
+        l{i} = sprintf('%.3f',netEtas(i));
+    end
+    
+    legend(b, l);
+    
     xlabel('Hidden Nodes');
     ylabel('Error Standard Deviation');
     drawnow;
 end
+
+fprintf('Execution time: %d seconds\n', floor(elapsedTime));
 
