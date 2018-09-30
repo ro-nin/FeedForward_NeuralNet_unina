@@ -41,12 +41,14 @@ errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
 
 % Hyperparameters to test
-netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, {@tanH, @ReLU},{@sigmoid, @ReLU}};
+netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, ...
+          {@tanH, @ReLU},{@sigmoid, @ReLU}};
 netNodes = [250, 500, 800];
-netEtas = [0.1, 0,05, 0.01, 0.001];
+netEtas = [0.1, 0.05, 0.01, 0.001];
 
-currError=0;
 fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; C.E. Standard deviation\n");
+
+bestErr = Inf;
 
 elapsedTime = 0;
 tic
@@ -59,7 +61,7 @@ for fnc = 1: length(netFnc)
         %used to store current error values for plotting
         nodeCounter=nodeCounter+1;
         deviationsEtas=cell(length(netEtas),1);
-        etaCounter=0;
+        etaCounter = 0;
         for eta = netEtas
             etaCounter=etaCounter+1;
             %store current error and accuracy for the k slice
@@ -83,9 +85,9 @@ for fnc = 1: length(netFnc)
                 net = train(net, k_train_im, k_train_lb, eta, size(k_train_im, 1), 1);
                 
                 %correctly predicted examples
-                guessed=0;
+                guessed = 0;
                 %value storing computed error
-                currError=0;
+                currError = 0;
                 
                 %test on the validation part
                 [~, z] = forwardPropagation(net, k_test_im);
@@ -99,8 +101,7 @@ for fnc = 1: length(netFnc)
                 end
                 %store current error for compute average between k rotations later
                 k_error(i+1) = currError;
-                accuracy = guessed / size(k_test_im, 1) * 100;
-                k_accuracy(i+1) = accuracy;
+                k_accuracy(i+1) = guessed / size(k_test_im, 1) * 100;
             end
             %compute mean between al the k rotations
             mean_accuracy = sum(k_accuracy) / k;
@@ -113,8 +114,14 @@ for fnc = 1: length(netFnc)
             
             fnc1 = func2str(netFnc{fnc}{1});
             fnc2 = func2str(netFnc{fnc}{2});
-            fprintf("%s; %s; %.3f; %d; %.2f; %f\n", fnc1, fnc2, eta, node, mean_accuracy, deviation);
-            deviationsEtas{etaCounter}=deviation;
+            str = sprintf("%s; %s; %.3f; %d; %.2f; %.2f\n", fnc1, fnc2, eta, node, mean_accuracy, deviation);
+            fprintf("%s", str);
+            deviationsEtas{etaCounter} = deviation;
+            
+            if (deviation < bestErr)
+                bestResult = str;
+                bestErr = deviation;
+            end
         end
         deviationsNodes{nodeCounter}=deviationsEtas;
     end
@@ -122,34 +129,9 @@ for fnc = 1: length(netFnc)
     elapsedTime = elapsedTime + toc;
     
     %plot the current functions
-    graphName = sprintf('K-Fold: %s - %s', fnc1, fnc2);
-    
-    figure('Name', graphName);
-    
-    c = categorical(netNodes);
-    
-    y = zeros(length(netNodes), length(netEtas));
-    
-    for devNodesIndex = 1 : length(deviationsNodes)
-        tmp = cell2mat(deviationsNodes{devNodesIndex})';
-        y(devNodesIndex, :) = tmp;
-    end
-    
-    b = bar(c,y);
-    
-    title(graphName);
-    
-    l = cell(1, length(netEtas));
-    for i = 1: length(netEtas)
-        l{i} = sprintf('%.3f',netEtas(i));
-    end
-    
-    legend(b, l);
-    
-    xlabel('Hidden Nodes');
-    ylabel('Error Standard Deviation');
-    drawnow;
+    plotBar(fnc1, fnc2, netNodes, netEtas, deviationsNodes);
 end
 
+fprintf('Best params: %s', bestResult);
 fprintf('Execution time: %d seconds\n', floor(elapsedTime));
 
