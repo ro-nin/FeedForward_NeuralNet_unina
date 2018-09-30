@@ -27,37 +27,39 @@ hiddenFnc = @tanH;
 outputFcn = @identity;
 errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
-TsSize = 3200;
+TsSize = 320;
 batchSize = 32;
 eta = 0.01;
-epochNumber = 50;
+epochNumber = 30;
 
 % Create neural network
 net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorDerivative);
-
+%store error computed after each epoch on all test set
 errorsOnline = zeros(epochNumber, 1);
 errorsBatch = zeros(epochNumber, 1);
 
-%start training for each epoch (online)
+%start training for each epoch (online learning)
 tic
 fprintf('Online Training\n');
 for epoch = 1: epochNumber
+    %train the network with a batchSize of 1 (online)
     net = train(net, train_im, train_lb, eta, TsSize, 1);  
     % Test neural net
     correct = 0;
     [~, out] = forwardPropagation(net, test_im, @softmax);
-    
+    %compute correctly guessed exemples
     for i = 1: size(out{1,2}, 1)
         [~, idx] = max(out{1,2}(i,:));
         if( idx == find( test_lb(i, :) ) )
             correct = correct + 1;
         end
     end
+    %store current error (for plot purpose)
     errorsOnline(epoch) = calculateError(out{1,2}, test_lb, errorFnc);
-    %errors(epoch) = sum(errorFnc(out{1,2},test_lb));
     fprintf('epoch: %3d; accuracy: %3.2f%%\n', epoch, (correct/size(test_im, 1))*100);
 end
 toc
+
 tic
 %start training for each epoch (miniBatch)
 fprintf('MiniBatch Training\n');
@@ -68,19 +70,19 @@ for epoch = 1: epochNumber
     % Test neural net
     correct = 0;
     [~, out] = forwardPropagation(net, test_im, @softmax);
-    
+    %compute correctly guessed exemples
     for i = 1: size(out{1,2}, 1)
         [~, idx] = max(out{1,2}(i,:));
         if( idx == find( test_lb(i, :) ) )
             correct = correct + 1;
         end
     end
+    %store current error (for plot purpose)
     errorsBatch(epoch) = calculateError(out{1,2}, test_lb, errorFnc);
-    %errors(epoch) = sum(errorFnc(out{1,2},test_lb));
     fprintf('epoch: %3d; accuracy: %3.2f%%\n', epoch, (correct/size(test_im, 1))*100);
 end
 
-
+% plotting loss of online and batch learning with the same number of epochs
 hold on
 warning off;
 legend('Error');

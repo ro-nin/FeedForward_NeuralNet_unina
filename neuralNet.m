@@ -1,6 +1,6 @@
 function net = neuralNet(numOfFeatures, layersNodes, ...
-                         activationFnc, errorFunction)
-% Create an ann feedforeward multilayer fully connected.
+                         activationFnc, errorDerivative)
+% Create an ann feedforward multilayer full connected.
 %
 % numOfFeatures: number indicating the number of input of the ann.
 %
@@ -9,8 +9,7 @@ function net = neuralNet(numOfFeatures, layersNodes, ...
 % activationFnc: function handler arraycell for activation 
 %                functions for each layer
 %
-%
-% errorFunction: cost function used to measure error on output
+% errorDerivative: cost function derivative handle for the output layer
 %
 % net: neural network with weights, biases and activation function
 
@@ -20,9 +19,9 @@ function net = neuralNet(numOfFeatures, layersNodes, ...
 net.numOfFeatures = numOfFeatures;
 net.numOfLayers = size(layersNodes, 2);
 net.activationFnc = activationFnc;
-net.errorFunction = errorFunction;
+net.errorFunction = errorDerivative;
 
-% activationDerivate: cell array con le derivate delle funzioni d'errore
+%link every activation function with corresponding derivative
 for i = 1: length(activationFnc)
     if isequal(net.activationFnc{i},@sigmoid)
         fnc = @sigmoidDerivative;
@@ -35,7 +34,7 @@ for i = 1: length(activationFnc)
     elseif isequal(net.activationFnc{i},@softmax)
         fnc = @softMaxDerivative;
     else
-        disp("errore funzioni di attivazione");
+        disp("error on activation function");
         return;
     end
     net.activationDerivative{i} = fnc;
@@ -48,7 +47,7 @@ prev = numOfFeatures;
 
 % Generate weights and biases
 for i = 1: net.numOfLayers
-    % Initialize weights with random value from the normal distribution.
+    % Initialize weights with random value from the normal distribution (maybe dependent on toolbox).
     net.weights{i} = normrnd(0, deviation, layersNodes(i), prev);
     % Initialize biases with zeros
     net.biases{i} = zeros(1, layersNodes(i));

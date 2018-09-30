@@ -4,7 +4,7 @@ function [a, z] = forwardPropagation(net, input, afterProcessFunction)
 % net: ann created with neuralNet function
 %
 % input: matrix of the inputs, each row is an element and each column is
-%        an feature of the element. 
+%        a feature of the example. 
 %
 % [a, z]: vector of arraycell.
 
