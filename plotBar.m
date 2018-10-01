@@ -1,5 +1,19 @@
 function plotBar(fnc1, fnc2, netNodes, netEtas, deviationsNodes)
-
+%Plot K-fold error measure for given functions and hyperparams
+%   the plot describes the cross validation results grouped by hidden nodes
+%   number used, with each bar represeting the error standard deviation on
+%   given learning rate
+%
+%fnc1: activation function for hidden nodes layer
+%
+%fnc2: activation function for output nodes layer
+%
+%netNodes: cell array with number of hidden nodes used for the CV,
+%          ex:({250},{500},{800})
+%
+%netEtas: cell array containing the learning rates used in the CV
+%
+%deviationNodes: counter for how many hidden nodes number are there
 graphName = sprintf('K-Fold: %s - %s', fnc1, fnc2);
 
 figure('Name', graphName);

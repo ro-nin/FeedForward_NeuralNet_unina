@@ -12,12 +12,11 @@ function [dWeights, dBiases] = backPropagation(net, input, ...
 
 layers = net.numOfLayers;
 [a, z] = forwardPropagation(net, input, @softmax);
-%outputs nodes after activation function
-net.z = z;
+
 delta = cell(1, layers);
 %compute deltas of the output layer
 delta{layers} = net.activationDerivative{layers}(a{layers}) .* ...
-                                    net.errorFunction(z{layers}, targets);
+                                    net.errorFunctionDerivative(z{layers}, targets);
 %compute deltas of the remaining layers backward
 for layer = layers -1: -1: 1
     delta{layer} = net.activationDerivative{layer}(a{layer}) .* ...

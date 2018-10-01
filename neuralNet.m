@@ -19,7 +19,7 @@ function net = neuralNet(numOfFeatures, layersNodes, ...
 net.numOfFeatures = numOfFeatures;
 net.numOfLayers = size(layersNodes, 2);
 net.activationFnc = activationFnc;
-net.errorFunction = errorDerivative;
+net.errorFunctionDerivative = errorDerivative;
 
 %link every activation function with corresponding derivative
 for i = 1: length(activationFnc)
