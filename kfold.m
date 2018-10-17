@@ -27,7 +27,7 @@ test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
 % Dimension of total training+validation set for k-fold
-ts_size = 100;
+ts_size = 300;
 % Number of folds
 k = 10;
 
@@ -44,7 +44,7 @@ errorFnc = @crossEntropy;
 netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, ...
           {@tanH, @ReLU},{@sigmoid, @ReLU}};
 netNodes = [250, 500, 800];
-netEtas = [0.1, 0.05, 0.01, 0.001];
+netEtas = [0.1, 0.05, 0.01, 0.005, 0.001];
 
 fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; C.E. Standard deviation\n");
 
@@ -114,7 +114,7 @@ for fnc = 1: length(netFnc)
             
             fnc1 = func2str(netFnc{fnc}{1});
             fnc2 = func2str(netFnc{fnc}{2});
-            str = sprintf("%s; %s; %.3f; %d; %.2f; %.2f\n", fnc1, fnc2, eta, node, mean_accuracy, deviation);
+            str = sprintf("%s; %s; %.4f; %d; %.2f; %.2f\n", fnc1, fnc2, eta, node, mean_accuracy, deviation);
             fprintf("%s", str);
             deviationsEtas{etaCounter} = deviation;
             

@@ -1,10 +1,9 @@
 function y = crossEntropyDerivative(X, Y)
-%CROSSENTROPYDX 
-%   *X: singolo valore o array
-%   *Y: singolo valore o array 
+%Cross entropy Derivative
+%   *X: single value or array input
+%   *Y: single value or array target
 
-%Derivata della Cross Entropy nel caso in cui
-%si utilizzi SoftMax per il post-processing della rete
+%Cross entropy derivative considering softmax error
 
     y = X - Y;
 

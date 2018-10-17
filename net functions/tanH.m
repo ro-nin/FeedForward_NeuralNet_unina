@@ -1,5 +1,6 @@
 function out = tanH(x)
-%funzione da'ttivazione per la funzione Hyperbolic tangent
+%Hyperbolic tangent activation
+% x: single value or array
 out= (exp(x)-exp(-x)) ./ (exp(x)+exp(-x));
 end
 

@@ -1,11 +1,8 @@
 function y = sigmoidDerivative(x)
-%SIGMOIDDX 
-%   x: valore numerico o array
-%   y: Array o valore numerico della
-%      derivata della funzione sigmoide con argomento x
+%SIGMOID derivative 
+%   x: single value or array
 
-%Permete di calcolare la derivata della funzione sigmoide
-%su singolo valore o array
+%evaluate derivative of sigmoid function
 
 
     y = sigmoid(x) .* (1-sigmoid(x));

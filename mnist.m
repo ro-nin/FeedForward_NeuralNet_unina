@@ -27,16 +27,18 @@ hiddenFnc = @tanH;
 outputFcn = @identity;
 errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
-TsSize = 320;
+TsSize = 3200;
 batchSize = 32;
 eta = 0.01;
 epochNumber = 30;
 
 % Create neural network
 net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorDerivative);
-%store error computed after each epoch on all test set
+%store error and accuracy computed after each epoch on all test set
 errorsOnline = zeros(epochNumber, 1);
 errorsBatch = zeros(epochNumber, 1);
+accuracyOnline = zeros(epochNumber, 1);
+accuracyBatch = zeros(epochNumber, 1);
 
 %start training for each epoch (online learning)
 tic
@@ -54,9 +56,12 @@ for epoch = 1: epochNumber
             correct = correct + 1;
         end
     end
-    %store current error (for plot purpose)
+    %store current error standard deviation(for plot purpose)evaluated on
+    %each test case
     errorsOnline(epoch) = calculateError(out{1,2}, test_lb, errorFnc);
-    fprintf('epoch: %3d; accuracy: %3.2f%%\n', epoch, (correct/size(test_im, 1))*100);
+    %store accuracy for this epoch
+    accuracyOnline(epoch)=(correct/size(test_im, 1))*100;
+    fprintf('epoch: %3d; accuracy: %3.2f%%; error: %3f\n', epoch,accuracyOnline(epoch) ,errorsOnline(epoch));
 end
 toc
 
@@ -77,13 +82,17 @@ for epoch = 1: epochNumber
             correct = correct + 1;
         end
     end
-    %store current error (for plot purpose)
+    %store current error standard deviation(for plot purpose)evaluated on
+    %each test case
     errorsBatch(epoch) = calculateError(out{1,2}, test_lb, errorFnc);
-    fprintf('epoch: %3d; accuracy: %3.2f%%\n', epoch, (correct/size(test_im, 1))*100);
+    %store accuracy for this epoch
+    accuracyBatch(epoch) = (correct/size(test_im, 1))*100;
+    fprintf('epoch: %3d; accuracy: %3.2f%%; error: %3f\n', epoch,accuracyBatch(epoch) ,errorsBatch(epoch));
 end
 
 % plotting loss of online and batch learning with the same number of epochs
 hold on
+figure('Name', 'Error');
 warning off;
 legend('Error');
 title('Loss Decay');
@@ -92,7 +101,25 @@ ylabel('Error (SUM of 10k errors)');
 axis auto;
 plot(errorsOnline(1:epochNumber), 'r','DisplayName','online');
 plot(errorsBatch(1:epochNumber), 'b','DisplayName','batch');
+drawnow;
 hold off
+
+
+
+% plotting accuracy of online and batch learning with the same number of epochs
+hold on
+figure('Name', 'Accuracy');
+warning off;
+legend('Accuracy');
+title('Total Accuracy');
+xlabel('Epochs');
+ylabel('Accuracy rate %');
+axis auto;
+plot(accuracyOnline(1:epochNumber), 'r','DisplayName','online');
+plot(accuracyBatch(1:epochNumber), 'b','DisplayName','batch');
+drawnow;
+hold off
+
 
 elapsedTime = toc;
 fprintf("time elapsed for execution: %.2f seconds\n", elapsedTime);

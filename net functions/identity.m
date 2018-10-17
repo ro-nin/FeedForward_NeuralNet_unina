@@ -1,13 +1,8 @@
 function y = identity(x)
-%IDENTITY 
-%   x: array di valori o singolo valore
-%   y: ritorna x stesso
+%IDENTITY activation
+%   x: array or single value
 
-
-%Funzione identita'
-
-
-    y = x;
+y = x;
 
 end
 

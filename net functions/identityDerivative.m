@@ -1,7 +1,7 @@
 function y = identityDerivative(x)
-%IDENTITYDX 
-%   x: array di valori o singolo valore
-%   y: array di 1 o 1
+%IDENTITY Derivative 
+%   x: array or single value
+%   y: array-of or single 1 
 
 
 %Derivata della funzione identita'

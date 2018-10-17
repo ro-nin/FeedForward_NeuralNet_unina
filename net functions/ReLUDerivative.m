@@ -1,5 +1,6 @@
 function out = ReLUDerivative(x)
-%funzione derivata di ReLU
+%Relu Derivative
+
 if x < 0
     out=0;
 else

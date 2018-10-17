@@ -1,7 +1,7 @@
 function out = softMaxDerivative(x)
-%Derivata per softMax, semplificazione per poter mantenere lo stesso
-%approccio di utilizzo di funzioni d'errore generalizzato, suppone cross
-%entropy come funzione d'errore
+%Softmax derivative
+%simplified to mantain a generalized approach for other
+%   functions, considering cross entropy as error function
     
 out = 1;
 end

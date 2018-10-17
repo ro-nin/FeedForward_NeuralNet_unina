@@ -1,5 +1,5 @@
 function out = ReLU(x)
-%Funzione di attivazione rectified linear unit.
+%rectified linear unit activation.
 if x < 0
     out=0;
 else

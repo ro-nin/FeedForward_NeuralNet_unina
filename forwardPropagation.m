@@ -19,6 +19,7 @@ for layer = 1: net.numOfLayers
     prevOut = z{layer};
 end
 
+%apply post process (like softmax)
 if exist('afterProcessFunction','var')
     z{net.numOfLayers} = afterProcessFunction(z{net.numOfLayers});
 end

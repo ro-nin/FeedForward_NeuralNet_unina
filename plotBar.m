@@ -33,7 +33,7 @@ title(graphName);
 
 l = cell(1, length(netEtas));
 for i = 1: length(netEtas)
-    l{i} = sprintf('%.3f',netEtas(i));
+    l{i} = sprintf('%.4f',netEtas(i));
 end
 
 legend(b, l);

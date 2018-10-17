@@ -1,12 +1,8 @@
 function y = crossEntropy(output,target)
-%CROSSENTROPY
-%   *output: singolo valore o array
-%   *target: etichette degli elementi
-
-%Riferimenti: lezioni frontali, Bishop
-
-
-%Calcola il valore della cross entropy.
+%CROSS ENTROPY
+%   *output: single value or array
+%   *target: element's labels
+%Evaluate Cross Entropy Value.
 
 
     tmp = target;
