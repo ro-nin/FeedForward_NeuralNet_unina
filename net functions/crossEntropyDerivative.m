@@ -3,9 +3,7 @@ function y = crossEntropyDerivative(X, Y)
 %   *X: single value or array input
 %   *Y: single value or array target
 
-%Cross entropy derivative considering softmax error
-
+%Cross entropy derivative
     y = X - Y;
-
 end
 

@@ -22,18 +22,20 @@ test_lb = test_lb';
 
 test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
-
-hiddenFnc = @tanH;
+%activation function for hidden layer
+hiddenFnc = @sigmoid;
+%activation function for output layer
 outputFcn = @identity;
 errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
 TsSize = 3200;
 batchSize = 32;
-eta = 0.01;
-epochNumber = 30;
+eta = 0.05;
+epochNumber = 100;
+hiddenNodes = 250;
 
 % Create neural network
-net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorDerivative);
+net = neuralNet(784, [hiddenNodes, 10], {hiddenFnc, outputFcn}, errorDerivative);
 %store error and accuracy computed after each epoch on all test set
 errorsOnline = zeros(epochNumber, 1);
 errorsBatch = zeros(epochNumber, 1);
@@ -68,7 +70,7 @@ toc
 tic
 %start training for each epoch (miniBatch)
 fprintf('MiniBatch Training\n');
-net = neuralNet(784, [250, 10], {hiddenFnc, outputFcn}, errorDerivative);
+net = neuralNet(784, [hiddenNodes, 10], {hiddenFnc, outputFcn}, errorDerivative);
 
 for epoch = 1: epochNumber
     net = train(net, train_im, train_lb, eta, TsSize, batchSize);  
@@ -91,8 +93,8 @@ for epoch = 1: epochNumber
 end
 
 % plotting loss of online and batch learning with the same number of epochs
-hold on
 figure('Name', 'Error');
+hold on
 warning off;
 legend('Error');
 title('Loss Decay');
@@ -101,14 +103,12 @@ ylabel('Error (SUM of 10k errors)');
 axis auto;
 plot(errorsOnline(1:epochNumber), 'r','DisplayName','online');
 plot(errorsBatch(1:epochNumber), 'b','DisplayName','batch');
-drawnow;
 hold off
-
-
+drawnow;
 
 % plotting accuracy of online and batch learning with the same number of epochs
-hold on
 figure('Name', 'Accuracy');
+hold on
 warning off;
 legend('Accuracy');
 title('Total Accuracy');
@@ -117,8 +117,8 @@ ylabel('Accuracy rate %');
 axis auto;
 plot(accuracyOnline(1:epochNumber), 'r','DisplayName','online');
 plot(accuracyBatch(1:epochNumber), 'b','DisplayName','batch');
-drawnow;
 hold off
+drawnow;
 
 
 elapsedTime = toc;

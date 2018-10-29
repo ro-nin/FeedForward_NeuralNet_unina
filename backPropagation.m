@@ -9,10 +9,9 @@ function [dWeights, dBiases] = backPropagation(net, input, ...
 %targets: matrix with the examples labels.
 %
 %
-
 layers = net.numOfLayers;
+%do a forward propagation and get a and z outputs for each node
 [a, z] = forwardPropagation(net, input, @softmax);
-
 delta = cell(1, layers);
 %compute deltas of the output layer
 delta{layers} = net.activationDerivative{layers}(a{layers}) .* ...
@@ -24,5 +23,4 @@ for layer = layers -1: -1: 1
 end
 %compute derivatives with each delta
 [dWeights, dBiases] = calculateDerivatives(net, delta, input, z);
-
 end
