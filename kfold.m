@@ -26,8 +26,8 @@ test_lb = test_lb';
 test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
-% Dimension of total training+validation set for k-fold
-ts_size = 3000;
+% Dimension of total training+validation set for k-fold, default: 300
+ts_size = 100;
 % Number of folds
 k = 10;
 
@@ -46,8 +46,9 @@ netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, ...
 netNodes = [250, 500, 800];
 netEtas = [0.1, 0.05, 0.01, 0.001];
 
-fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; C.E. Standard deviation\n");
+fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; Mean error\n");
 
+bestAcc = -Inf;
 bestErr = Inf;
 
 elapsedTime = 0;
@@ -55,12 +56,12 @@ tic
 %for each hyper param:
 for fnc = 1: length(netFnc)
     %used to store current error values for plotting
-    deviationsNodes = cell(length(netNodes),1);
+    accNode = cell(length(netNodes),1);
     nodeCounter=0;
     for node = netNodes
         %used to store current error values for plotting
         nodeCounter=nodeCounter+1;
-        deviationsEtas=cell(length(netEtas),1);
+        accEtas=cell(length(netEtas),1);
         etaCounter = 0;
         for eta = netEtas
             etaCounter=etaCounter+1;
@@ -90,7 +91,7 @@ for fnc = 1: length(netFnc)
                 currError = 0;
                 
                 %test on the validation part
-                [~, z] = forwardPropagation(net, k_test_im);
+                [~, z] = forwardPropagation(net, k_test_im, @softmax);
                 %compute guessed examples and errore
                 for n = 1: size(z{1,2}, 1)
                     [val, idx] = max(z{1,2}(n,:));
@@ -104,34 +105,37 @@ for fnc = 1: length(netFnc)
                 k_accuracy(i+1) = guessed / size(k_test_im, 1) * 100;
             end
             %compute mean between al the k rotations
-            mean_accuracy = sum(k_accuracy) / k;
-            
-            %compute a standard deviation value for the k-fold with these
-            %hyperparams
-            mu = sum(k_error) / k;
-            variance = sum((k_error - mu).^2) / k;
-            deviation = sqrt(variance);
+            mean_accuracy =mean(k_accuracy);
+            mean_error = mean(k_error);
+            stdAcc = std(k_accuracy);
+            stdError = std(k_error);
             
             fnc1 = func2str(netFnc{fnc}{1});
             fnc2 = func2str(netFnc{fnc}{2});
-            str = sprintf("%s; %s; %.4f; %d; %.2f; %.2f\n", fnc1, fnc2, eta, node, mean_accuracy, deviation);
+            str = sprintf("%s-%s;%.4f;%d;%.2f;%.2f;%.2f;%.2f\n", fnc1, fnc2, eta, node, mean_accuracy, mean_error,stdAcc,stdError);
             fprintf("%s", str);
-            deviationsEtas{etaCounter} = deviation;
+            accEtas{etaCounter} = mean_accuracy;
             
-            if (deviation < bestErr)
-                bestResult = str;
-                bestErr = deviation;
+            if (mean_accuracy > bestAcc)
+                bestAccString = str;
+                bestAcc = mean_accuracy;
+            end
+            if (mean_error < bestErr)
+                bestErrString = str;
+                bestErr = mean_error;
             end
         end
-        deviationsNodes{nodeCounter}=deviationsEtas;
+        accNode{nodeCounter}=accEtas;
     end
     
     elapsedTime = elapsedTime + toc;
     
     %plot the current functions
-    plotBar(fnc1, fnc2, netNodes, netEtas, deviationsNodes);
+    plotBar(fnc1, fnc2, netNodes, netEtas, accNode);
 end
 
-fprintf('Best params: %s', bestResult);
-fprintf('Execution time: %d seconds\n', floor(elapsedTime));
+fprintf('\nBest Accuracy: %s\n', bestAccString);
+fprintf('Best Error: %s\n', bestErrString);
+
+fprintf('Execution time: %d minutes\n', floor(elapsedTime/60));
 

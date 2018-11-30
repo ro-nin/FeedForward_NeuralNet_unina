@@ -39,7 +39,20 @@ end
 legend(b, l);
 
 xlabel('Hidden Nodes');
-ylabel('Error Standard Deviation');
+ylabel('Mean Accuracy');
+
+
+
+a = (1:size(y,1)).';
+x = [a-0.20 a a+0.20 a+0.40];
+for k=1:size(y,1)
+    for m = 1:size(y,2)
+        text(x(k,m),y(k,m),num2str(y(k,m),'%0.2f'),...
+            'HorizontalAlignment','center',...
+            'VerticalAlignment','bottom')
+    end
+end
+
 drawnow;
 
 end

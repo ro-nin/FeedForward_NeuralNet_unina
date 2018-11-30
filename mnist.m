@@ -102,7 +102,7 @@ xlabel('Epochs');
 ylabel('Error (SUM of 10k errors)');
 axis auto;
 plot(errorsOnline(1:epochNumber), 'r','DisplayName','online');
-plot(errorsBatch(1:epochNumber), 'b','DisplayName','batch');
+plot(errorsBatch(1:epochNumber), 'b','DisplayName','minibatch');
 hold off
 drawnow;
 
@@ -116,7 +116,7 @@ xlabel('Epochs');
 ylabel('Accuracy rate %');
 axis auto;
 plot(accuracyOnline(1:epochNumber), 'r','DisplayName','online');
-plot(accuracyBatch(1:epochNumber), 'b','DisplayName','batch');
+plot(accuracyBatch(1:epochNumber), 'b','DisplayName','minibatch');
 hold off
 drawnow;
 
