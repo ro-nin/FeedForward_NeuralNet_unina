@@ -10,46 +10,167 @@ train_im = loadMNISTImages('train-images.idx3-ubyte')';
 % 60000 x 10
 train_lb = loadMNISTLabels('train-labels.idx1-ubyte');
 train_lb = train_lb';
-
 train_lb(train_lb==0) = 10;
 train_lb = dummyvar(train_lb);
-
 % 784 x 10000
 test_im = loadMNISTImages('t10k-images.idx3-ubyte')';
 % 10000 x 10
 test_lb = loadMNISTLabels('t10k-labels.idx1-ubyte');
 test_lb = test_lb';
-
 test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
+
+%size of training set and validation set
+TsSize = 32000;
+VsSize = 8000;
+%cut the training/val set
+trainingSet=train_im(1:TsSize,:);
+trainingSetLabel=train_lb(1:TsSize,:);
+validationSet=train_im(TsSize+1:TsSize+1+VsSize,:);
+validationSetLabel=train_lb(TsSize+1:TsSize+1+VsSize,:);
+
 %activation function for hidden layer
-hiddenFnc = @sigmoid;
+hiddenFnc = @tanH;
 %activation function for output layer
-outputFcn = @identity;
+outputFcn = @ReLU;
 errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
-TsSize = 3200;
-batchSize = 3200;
-eta = 0.05;
-epochNumber = 100;
+
+batchSize = 32;
+eta = 0.0001;
+epochNumber = 500;
 hiddenNodes = 250;
+
+%epoch number cointainer for early stopping
+finalEpochsMiniB = epochNumber;
+finalEpochsOnline = epochNumber;
 
 % Create neural network
 net = neuralNet(784, [hiddenNodes, 10], {hiddenFnc, outputFcn}, errorDerivative);
+% used to revert to previous net in early stopping
+lastNet=net;
+lastError=Inf;
 %store error and accuracy computed after each epoch on all test set
-errorsOnline = zeros(epochNumber, 1);
-errorsBatch = zeros(epochNumber, 1);
+errorsOnlineValidation = zeros(epochNumber, 1);
+errorsOnlineTraining = zeros(epochNumber, 1);
+errorsBatchValidation = zeros(epochNumber, 1);
+errorsBatchTraining = zeros(epochNumber, 1);
 accuracyOnline = zeros(epochNumber, 1);
 accuracyBatch = zeros(epochNumber, 1);
 
+tic
+%start training for each epoch (miniBatch)
+fprintf('MiniBatch Training\n');
+for epoch = 1: epochNumber
+    net = train(net, trainingSet, trainingSetLabel, eta, TsSize, batchSize);  
+     % Evaluate Network
+    %evaluate accuracy on current network
+    correct = 0;
+    [~, out] = forwardPropagation(net, validationSet, @softmax);
+    %compute correctly guessed exemples
+    for i = 1: size(out{1,2}, 1)
+        [~, idx] = max(out{1,2}(i,:));
+        if( idx == find( validationSetLabel(i, :) ) )
+            correct = correct + 1;
+        end
+    end
+    %store accuracy for this epoch
+    accuracyBatch(epoch)=(correct/size(validationSet, 1))*100;
+    %evaluate error on validation
+    errorsBatchValidation(epoch) = calculateError(out{1,2}, validationSetLabel, errorFnc);
+    %evaluate error on training
+    [~, out] = forwardPropagation(net, trainingSet, @softmax);
+    errorsBatchTraining(epoch) = calculateError(out{1,2}, trainingSetLabel, errorFnc);
+    fprintf('epoch: %3d; accuracy: %3.2f%%; errorVal: %3f,errorTrain: %3f\n', epoch,accuracyBatch(epoch) ,errorsBatchValidation(epoch),errorsBatchTraining(epoch));
+    %check early stopping every 5 epoch
+    if(mod(epoch,5)==0)
+        if(errorsBatchValidation(epoch)>lastError)
+            %early stop
+            net=lastNet;
+            finalEpochsMiniB=epoch;
+            break;
+        else
+            lastNet=net;
+            lastError=errorsBatchValidation(epoch);
+        end
+    end
+        
+end
+elapsedTime = toc;
+fprintf("time elapsed for execution: %.2f seconds, epochs:%d\n", elapsedTime,finalEpochsMiniB);
+
+% plotting loss on validation and training in minibatch mode
+figure('Name', 'Error');
+hold on
+warning off;
+legend('Error');
+title('Minibatch Loss');
+xlabel('Epochs');
+ylabel('Total Error');
+axis auto;
+plot(errorsBatchValidation(1:finalEpochsMiniB), 'r','DisplayName','Validation');
+plot(errorsBatchTraining(1:finalEpochsMiniB), 'b','DisplayName','Training');
+hold off
+drawnow;
+
+%accuracy test with minibatch network
+correct = 0;
+    [~, out] = forwardPropagation(net, test_im, @softmax);
+    %compute correctly guessed exemples
+    for i = 1: size(out{1,2}, 1)
+        [~, idx] = max(out{1,2}(i,:));
+        if( idx == find( test_lb(i, :) ) )
+            correct = correct + 1;
+        end
+    end
+fprintf('Minibatch accuracy on test set %2f\n', (correct/10000)*100);
+
+
+lastNet=net;
+lastError=Inf;
 %start training for each epoch (online learning)
 tic
 fprintf('Online Training\n');
 for epoch = 1: epochNumber
     %train the network with a batchSize of 1 (online)
-    net = train(net, train_im, train_lb, eta, TsSize, 1);  
-    % Test neural net
+    net = train(net, trainingSet, trainingSetLabel, eta, TsSize, 1);  
+    % Evaluate Network
+    %evaluate accuracy on current network
     correct = 0;
+    [~, out] = forwardPropagation(net, validationSet, @softmax);
+    %compute correctly guessed exemples
+    for i = 1: size(out{1,2}, 1)
+        [~, idx] = max(out{1,2}(i,:));
+        if( idx == find( validationSetLabel(i, :) ) )
+            correct = correct + 1;
+        end
+    end
+    %store accuracy for this epoch
+    accuracyOnline(epoch)=(correct/size(validationSet, 1))*100;
+    %evaluate error on validation
+    errorsOnlineValidation(epoch) = calculateError(out{1,2}, validationSetLabel, errorFnc);
+    %evaluate error on training
+    [~, out] = forwardPropagation(net, trainingSet, @softmax);
+    errorsOnlineTraining(epoch) = calculateError(out{1,2}, trainingSetLabel, errorFnc);
+    fprintf('epoch: %3d; accuracy: %3.2f%%; errorVal: %3f,errorTrain: %3f\n', epoch,accuracyOnline(epoch) ,errorsOnlineValidation(epoch),errorsOnlineTraining(epoch));
+    %check early stopping every 5 epoch
+    if(mod(epoch,5)==0)
+        if(errorsOnlineValidation(epoch)>lastError)
+            %early stop
+            net=lastNet;
+            finalEpochsOnline=epoch;
+            break;
+        else
+            lastNet=net;
+            lastError=errorsOnlineValidation(epoch);
+        end
+    end
+end
+
+fprintf("time elapsed for execution: %.2f seconds, epochs:%d\n", toc,finalEpochsOnline);
+
+%accuracy test with online network
+correct = 0;
     [~, out] = forwardPropagation(net, test_im, @softmax);
     %compute correctly guessed exemples
     for i = 1: size(out{1,2}, 1)
@@ -58,70 +179,38 @@ for epoch = 1: epochNumber
             correct = correct + 1;
         end
     end
-    %store current error standard deviation(for plot purpose)evaluated on
-    %each test case
-    errorsOnline(epoch) = calculateError(out{1,2}, test_lb, errorFnc);
-    %store accuracy for this epoch
-    accuracyOnline(epoch)=(correct/size(test_im, 1))*100;
-    fprintf('epoch: %3d; accuracy: %3.2f%%; error: %3f\n', epoch,accuracyOnline(epoch) ,errorsOnline(epoch));
-end
-toc
+fprintf('online accuracy on test set %2f\n', (correct/10000)*100);
 
-tic
-%start training for each epoch (miniBatch)
-fprintf('MiniBatch Training\n');
-net = neuralNet(784, [hiddenNodes, 10], {hiddenFnc, outputFcn}, errorDerivative);
+% plotting loss on validation and training in online mode
+figure('Name', 'Error');
+hold on
+warning off;
+legend('Error');
+title('Online Loss');
+xlabel('Epochs');
+ylabel('Total Error');
+axis auto;
+plot(errorsOnlineValidation(1:finalEpochsOnline), 'r','DisplayName','Validation');
+plot(errorsOnlineTraining(1:finalEpochsOnline), 'b','DisplayName','Training');
+hold off
+drawnow;
 
-for epoch = 1: epochNumber
-    net = train(net, train_im, train_lb, eta, TsSize, batchSize);  
-    % Test neural net
-    correct = 0;
-    [~, out] = forwardPropagation(net, test_im, @softmax);
-    %compute correctly guessed exemples
-    for i = 1: size(out{1,2}, 1)
-        [~, idx] = max(out{1,2}(i,:));
-        if( idx == find( test_lb(i, :) ) )
-            correct = correct + 1;
-        end
-    end
-    %store current error standard deviation(for plot purpose)evaluated on
-    %each test case
-    errorsBatch(epoch) = calculateError(out{1,2}, test_lb, errorFnc);
-    %store accuracy for this epoch
-    accuracyBatch(epoch) = (correct/size(test_im, 1))*100;
-    fprintf('epoch: %3d; accuracy: %3.2f%%; error: %3f\n', epoch,accuracyBatch(epoch) ,errorsBatch(epoch));
-end
 
 % plotting loss of online and batch learning with the same number of epochs
 figure('Name', 'Error');
 hold on
 warning off;
 legend('Error');
-title('Loss Decay');
+title('Loss on Validation');
 xlabel('Epochs');
-ylabel('Error (SUM of 10k errors)');
+ylabel('Total Error');
 axis auto;
-plot(errorsOnline(1:epochNumber), 'r','DisplayName','online');
-plot(errorsBatch(1:epochNumber), 'b','DisplayName','minibatch');
-hold off
-drawnow;
-
-% plotting accuracy of online and batch learning with the same number of epochs
-figure('Name', 'Accuracy');
-hold on
-warning off;
-legend('Accuracy');
-title('Total Accuracy');
-xlabel('Epochs');
-ylabel('Accuracy rate %');
-axis auto;
-plot(accuracyOnline(1:epochNumber), 'r','DisplayName','online');
-plot(accuracyBatch(1:epochNumber), 'b','DisplayName','minibatch');
+plot(errorsOnlineValidation(1:finalEpochsOnline), 'r','DisplayName','online');
+plot(errorsBatchValidation(1:finalEpochsMiniB), 'b','DisplayName','minibatch');
 hold off
 drawnow;
 
 
-elapsedTime = toc;
-fprintf("time elapsed for execution: %.2f seconds\n", elapsedTime);
+
 
 
