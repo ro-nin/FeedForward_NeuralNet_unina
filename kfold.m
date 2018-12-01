@@ -27,9 +27,12 @@ test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
 % Dimension of total training+validation set for k-fold, default: 300
-ts_size = 100;
+ts_size = 320;
 % Number of folds
 k = 10;
+
+epochNumber=50;
+batchSize=32;
 
 %compute slice size for k-folding
 slice_size = int32(ts_size / k);
@@ -42,11 +45,11 @@ errorFnc = @crossEntropy;
 
 % Hyperparameters to test
 netFnc = {{@tanH, @identity}, {@sigmoid, @identity}, ...
-          {@tanH, @ReLU},{@sigmoid, @ReLU}};
+          {@tanH, @ReLU},{@sigmoid,@sigmoid}};
 netNodes = [250, 500, 800];
-netEtas = [0.1, 0.05, 0.01, 0.001];
+netEtas = [0.1,0.01, 0.001, 0.0001];
 
-fprintf("Hidden function; Output function; Eta;	Hidden nodes; Mean Accuracy; Mean error\n");
+fprintf("Hidden function-Output function; Eta; Hidden nodes; Mean Accuracy; Mean error; Std Acc; Std Error\n");
 
 bestAcc = -Inf;
 bestErr = Inf;
@@ -83,7 +86,10 @@ for fnc = 1: length(netFnc)
                 
                 %train the network with current params
                 net = neuralNet(784, [node, 10], netFnc{fnc}, errorDerivative);
-                net = train(net, k_train_im, k_train_lb, eta, size(k_train_im, 1), 1);
+                %net = train(net, k_train_im, k_train_lb, eta, size(k_train_im, 1), 1);
+                for epoch = 1: epochNumber
+                    net = train(net, k_train_im, k_train_lb, eta, size(k_train_im, 1), batchSize);
+                end
                 
                 %correctly predicted examples
                 guessed = 0;
@@ -112,7 +118,7 @@ for fnc = 1: length(netFnc)
             
             fnc1 = func2str(netFnc{fnc}{1});
             fnc2 = func2str(netFnc{fnc}{2});
-            str = sprintf("%s-%s;%.4f;%d;%.2f;%.2f;%.2f;%.2f\n", fnc1, fnc2, eta, node, mean_accuracy, mean_error,stdAcc,stdError);
+            str = sprintf("%s-%s; %.5f; %d; %.2f; %.2f; %.2f; %.2f\n", fnc1, fnc2, eta, node, mean_accuracy, mean_error,stdAcc,stdError);
             fprintf("%s", str);
             accEtas{etaCounter} = mean_accuracy;
             
@@ -120,7 +126,7 @@ for fnc = 1: length(netFnc)
                 bestAccString = str;
                 bestAcc = mean_accuracy;
             end
-            if (mean_error < bestErr)
+            if (mean_error < bestErr && mean_error > 0)
                 bestErrString = str;
                 bestErr = mean_error;
             end
