@@ -37,7 +37,7 @@ errorDerivative = @crossEntropyDerivative;
 errorFnc = @crossEntropy;
 
 batchSize = 32;
-eta = 0.0001;
+eta = 0.01;
 epochNumber = 500;
 hiddenNodes = 250;
 
@@ -97,7 +97,7 @@ for epoch = 1: epochNumber
         
 end
 elapsedTime = toc;
-fprintf("time elapsed for execution: %.2f seconds, epochs:%d\n", elapsedTime,finalEpochsMiniB);
+fprintf("time elapsed for execution: %.2f minutes, epochs:%d\n", floor(elapsedTime/60),finalEpochsMiniB);
 
 % plotting loss on validation and training in minibatch mode
 figure('Name', 'Error');
@@ -167,7 +167,7 @@ for epoch = 1: epochNumber
     end
 end
 
-fprintf("time elapsed for execution: %.2f seconds, epochs:%d\n", toc,finalEpochsOnline);
+fprintf("time elapsed for execution: %.2f minutes, epochs:%d\n", floor(toc/60),finalEpochsOnline);
 
 %accuracy test with online network
 correct = 0;

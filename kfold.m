@@ -27,7 +27,7 @@ test_lb(test_lb==0) = 10;
 test_lb = dummyvar(test_lb);
 
 % Dimension of total training+validation set for k-fold, default: 300
-ts_size = 320;
+ts_size = 3200;
 % Number of folds
 k = 10;
 
