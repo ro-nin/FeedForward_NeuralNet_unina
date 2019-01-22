@@ -1,0 +1,32 @@
+MiniBatch Training
+epoch:   1; accuracy: 92.44%; errorVal: 2054.903034,errorTrain: 7113.275779
+epoch:   2; accuracy: 94.70%; errorVal: 1417.900944,errorTrain: 4112.820202
+epoch:   3; accuracy: 95.53%; errorVal: 1200.564714,errorTrain: 2830.751690
+epoch:   4; accuracy: 96.00%; errorVal: 1091.661429,errorTrain: 2074.700658
+epoch:   5; accuracy: 96.18%; errorVal: 1043.038839,errorTrain: 1612.535958
+epoch:   6; accuracy: 96.33%; errorVal: 1010.099835,errorTrain: 1228.060286
+epoch:   7; accuracy: 96.61%; errorVal: 941.397705,errorTrain: 853.979886
+epoch:   8; accuracy: 96.80%; errorVal: 907.292024,errorTrain: 631.391864
+epoch:   9; accuracy: 96.93%; errorVal: 884.834401,errorTrain: 451.368365
+epoch:  10; accuracy: 97.03%; errorVal: 874.977030,errorTrain: 333.347296
+epoch:  11; accuracy: 97.06%; errorVal: 874.831396,errorTrain: 265.595290
+epoch:  12; accuracy: 97.04%; errorVal: 875.466497,errorTrain: 217.135418
+epoch:  13; accuracy: 97.11%; errorVal: 876.866052,errorTrain: 181.862063
+epoch:  14; accuracy: 97.11%; errorVal: 878.726280,errorTrain: 155.231804
+epoch:  15; accuracy: 97.09%; errorVal: 880.353998,errorTrain: 134.317242
+time elapsed for execution: 0.00 minutes, epochs:15
+Minibatch accuracy on test set 97.650000
+Online Training
+epoch:   1; accuracy: 97.04%; errorVal: 872.990060,errorTrain: 264.175279
+epoch:   2; accuracy: 97.09%; errorVal: 872.391374,errorTrain: 212.486493
+epoch:   3; accuracy: 97.15%; errorVal: 874.561088,errorTrain: 178.366765
+epoch:   4; accuracy: 97.10%; errorVal: 876.672675,errorTrain: 152.636500
+epoch:   5; accuracy: 97.10%; errorVal: 878.494792,errorTrain: 132.402914
+epoch:   6; accuracy: 97.09%; errorVal: 879.992904,errorTrain: 116.121193
+epoch:   7; accuracy: 97.11%; errorVal: 881.256521,errorTrain: 102.811880
+epoch:   8; accuracy: 97.14%; errorVal: 882.394699,errorTrain: 91.819910
+epoch:   9; accuracy: 97.16%; errorVal: 883.476940,errorTrain: 82.657336
+epoch:  10; accuracy: 97.16%; errorVal: 884.536640,errorTrain: 74.947138
+time elapsed for execution: 9.00 minutes, epochs:10
+online accuracy on test set 97.660000
+>> 
